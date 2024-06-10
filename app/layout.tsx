@@ -22,27 +22,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn("antialiased ", poppins.className)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ClerkProvider
-            appearance={{
-              elements: {
-                formButtonPrimary: "bg-primary hover:bg-primary/80",
-                formButtonSecondary: "bg-secondary",
-                footerAction: "text-foreground hover:text-foreground/70",
-              },
-            }}
+    <ClerkProvider
+      appearance={{
+        elements: {
+          formButtonPrimary: "bg-primary hover:bg-primary/80",
+          formButtonSecondary: "bg-secondary",
+          footerAction: "text-foreground hover:text-foreground/70",
+        },
+      }}
+    >
+      <html lang="en">
+        <body className={cn("antialiased ", poppins.className)}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
             {children}
-          </ClerkProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
