@@ -1,5 +1,3 @@
-import { DefaultSession } from "next-auth";
-
 export interface UserInterface {
   _id: string;
   username: string;
@@ -13,13 +11,6 @@ export interface UserInterface {
   followers: string[];
   following: string[];
   createdAt: Date;
-}
-
-export type User = DefaultSession["user"] & UserInterface;
-
-declare module "next-auth" {
-  // eslint-disable-next-line no-unused-vars
-  interface User extends UserInterface {}
 }
 
 export type AuthFormProps = {

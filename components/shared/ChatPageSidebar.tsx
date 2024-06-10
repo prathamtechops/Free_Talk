@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+
 import { LogoutButton } from "./LogoutButton";
 import { SidebarContent } from "./SidebarContent";
 
