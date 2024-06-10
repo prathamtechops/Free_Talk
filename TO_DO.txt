@@ -1,0 +1,7 @@
+profile page
+email varification
+forgot password 
+error page 
+not found page
+2fa
+home page 
