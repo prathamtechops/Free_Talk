@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { loginWithGoogle } from "@/lib/actions/user.actions";
 import { GoogleLogo } from "./icons";
 
 export const SocialButtons = ({ type }: { type: "login" | "register" }) => {
-  const handleGoogleLogin = async () => {
-    await loginWithGoogle();
-  };
+  const handleGoogleLogin = async () => {};
 
   return (
     <div className="grid gap-4">

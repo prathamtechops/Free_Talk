@@ -6,8 +6,6 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
 import { GetUserById } from "./shared.types";
 
-
-
 export async function getUserById(params: GetUserById) {
   try {
     connectToDatabase();
