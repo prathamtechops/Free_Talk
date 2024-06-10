@@ -79,7 +79,7 @@ export async function POST(req: Request) {
         email: email_addresses[0].email_address,
         avatar: image_url,
       },
-      path: `/profile/${id}`,
+      path: `/`,
     });
 
     return NextResponse.json({ message: "ok", user: newMongoUser });

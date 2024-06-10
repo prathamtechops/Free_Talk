@@ -25,9 +25,9 @@ export const ChatSidebar = async () => {
         <UsersAvatar
           className="mx-auto mb-10  items-start justify-start rounded-lg"
           avatarSize="size-9"
-          avatar={userData.avatar}
+          avatar={userData?.avatar}
         />
-        <SidebarContent userId={""} />
+        <SidebarContent clerkId={userId} />
       </div>
       <LogoutButton isChatPage={true} />
     </nav>

@@ -13,7 +13,7 @@ export default function UsersAvatar({
   return (
     <div className={cn("flex gap-3", className)}>
       <Avatar className={`${avatarSize}`}>
-        <AvatarImage src={avatar} alt={name ? name[0] : ""} />
+        <AvatarImage src={avatar || ""} alt={name ? name[0] : ""} />
         <AvatarFallback>
           <span>{name ? name[0] : ""}</span>
         </AvatarFallback>

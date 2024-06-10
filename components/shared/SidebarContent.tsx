@@ -4,7 +4,11 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export const SidebarContent = ({ userId }: { userId: string | undefined }) => {
+export const SidebarContent = ({
+  clerkId,
+}: {
+  clerkId: string | undefined;
+}) => {
   const pathname = usePathname();
 
   const hideLinkNames = pathname?.includes("/chat") || pathname === "/chat";
@@ -22,9 +26,9 @@ export const SidebarContent = ({ userId }: { userId: string | undefined }) => {
         }
 
         if (link.href === "/profile") {
-          // if (userId) {
-          //   link.href = `/profile/${userId}`;
-          // }
+          if (clerkId) {
+            link.href = `/profile/${clerkId}`;
+          }
         }
 
         return link.href ? (
