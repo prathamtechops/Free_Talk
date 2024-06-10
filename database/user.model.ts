@@ -1,12 +1,11 @@
 import { Document, Schema, model, models } from "mongoose";
 
 export interface IUser extends Document {
+  clerkId: string;
   username: string;
   bio: string;
-  password: string;
   email: string;
   avatar: string;
-  emailVerified: boolean;
   chats: Schema.Types.ObjectId[];
   posts: Schema.Types.ObjectId[];
   likes: Schema.Types.ObjectId[];
@@ -18,12 +17,11 @@ export interface IUser extends Document {
 }
 
 export const UserSchema = new Schema<IUser>({
+  clerkId: { type: String, required: true },
   username: { type: String, required: true },
   bio: { type: String, required: false },
-  password: { type: String },
   email: { type: String, unique: true, required: true },
   avatar: { type: String, required: false },
-  emailVerified: { type: Boolean, required: false, default: false },
   chats: [{ type: Schema.Types.ObjectId, ref: "Chat", required: false }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],
   posts: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],

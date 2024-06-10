@@ -4,7 +4,18 @@ import User, { IUser } from "@/database/user.model";
 import { UserInterface } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
-import { GetUserById } from "./shared.types";
+import { CreateUserParams, GetUserById } from "./shared.types";
+
+export async function createUser(params: CreateUserParams) {
+  try {
+    connectToDatabase();
+    const user = await User.create(params);
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 export async function getUserById(params: GetUserById) {
   try {

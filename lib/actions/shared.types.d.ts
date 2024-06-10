@@ -1,5 +1,12 @@
 import { Schema } from "mongoose";
 
+export interface CreateUserParams {
+  username: string;
+  email: string;
+  clerkId: string;
+  avatar: string;
+}
+
 export interface GetVerificationTokenByEmail {
   email: string;
 }
