@@ -10,10 +10,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { updateUser } from "@/lib/actions/user.actions";
 import { editUserSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePathname, useRouter } from "next/navigation";
+// import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,22 +27,9 @@ export function EditUserForm({ user }: { user: string }) {
     },
   });
 
-  const router = useRouter();
-  const pathname = usePathname();
-  async function onSubmit(values: z.infer<typeof editUserSchema>) {
-    try {
-      await updateUser({
-        username: values.username,
-        bio: values.bio,
-        id: userData._id,
-        pathname,
-      });
-
-      router.push("/");
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // const router = useRouter();
+  // const pathname = usePathname();
+  async function onSubmit(values: z.infer<typeof editUserSchema>) {}
 
   return (
     <Form {...form}>
