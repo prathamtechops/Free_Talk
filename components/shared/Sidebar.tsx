@@ -23,7 +23,7 @@ export const Sidebar = async () => {
     >
       <div className="flex  flex-col justify-between">
         <UsersAvatar
-          name={userData.username}
+          name={userData?.username}
           avatar={userData.avatar}
           subText={userData.name}
           className="lg:bg-dark800_light100 mx-auto mb-10 items-start justify-start rounded-lg lg:mx-4  lg:border  lg:p-2 "
