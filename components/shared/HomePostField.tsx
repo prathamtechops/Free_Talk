@@ -1,9 +1,8 @@
 import { GalleryIcon } from "@/components/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { UserSessionTypes } from "@/types";
 
-export const HomePostField = ({ user }: UserSessionTypes) => {
+export const HomePostField = () => {
   return (
     <Card>
       <CardHeader>

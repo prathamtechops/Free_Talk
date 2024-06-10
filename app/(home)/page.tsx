@@ -6,7 +6,7 @@ const Home = async () => {
     <div className="grid gap-10 md:grid-cols-3">
       <div className="space-y-4 md:col-span-2">
         {/* Story Session TODO */}
-        <HomePostField user={""} />
+        <HomePostField />
         <PostCard />
       </div>
       <div className="hidden md:block">Suggestion</div>
