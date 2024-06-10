@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <div className="size-full lg:grid lg:grid-cols-2 ">
       <div className="flex items-center justify-center py-12">
-        <SignIn afterSignOutUrl="/sign-in" />
+        <SignIn />
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
