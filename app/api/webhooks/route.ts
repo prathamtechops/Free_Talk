@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { createUser, updateUser } from "@/lib/actions/user.actions";
+import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -85,11 +85,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "ok", user: newMongoUser });
   }
 
-  // if (eventType === "user.deleted") {
-  //   const { id } = evt.data;
+  if (eventType === "user.deleted") {
+    const { id } = evt.data;
 
-  //   const deletedUser = await deleteUser({ clerkId: id! });
+    const deletedUser = await deleteUser({ clerkId: id! });
 
-  //   return NextResponse.json({ message: "ok", user: deletedUser });
-  // }
+    return NextResponse.json({ message: "ok", user: deletedUser });
+  }
+
+  return NextResponse.json({ message: "ok" });
 }

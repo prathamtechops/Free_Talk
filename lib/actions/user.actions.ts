@@ -63,3 +63,15 @@ export async function updateUser(params: UpdateUserParams) {
     console.log(e);
   }
 }
+
+export async function deleteUser(params: GetUserByClerkId) {
+  try {
+    connectToDatabase();
+    const { clerkId } = params;
+    const user = await User.findOneAndDelete({ clerkId });
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
