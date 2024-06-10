@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { createUser } from "@/lib/actions/user.actions";
+import { createUser, updateUser } from "@/lib/actions/user.actions";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -55,10 +55,11 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created") {
-    const { id, email_addresses, image_url, username } = evt.data;
-
+    const { id, email_addresses, image_url, username, first_name, last_name } =
+      evt.data;
     const newMongoUser = await createUser({
       clerkId: id,
+      name: `${first_name} ${last_name || ""}`,
       username: username!,
       email: email_addresses[0].email_address,
       avatar: image_url,
@@ -66,4 +67,29 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "ok", user: newMongoUser });
   }
+  if (eventType === "user.updated") {
+    const { id, email_addresses, image_url, username, first_name, last_name } =
+      evt.data;
+
+    const newMongoUser = await updateUser({
+      clerkId: id,
+      updateData: {
+        name: `${first_name} ${last_name || ""}`,
+        username: username!,
+        email: email_addresses[0].email_address,
+        avatar: image_url,
+      },
+      path: `/profile/${id}`,
+    });
+
+    return NextResponse.json({ message: "ok", user: newMongoUser });
+  }
+
+  // if (eventType === "user.deleted") {
+  //   const { id } = evt.data;
+
+  //   const deletedUser = await deleteUser({ clerkId: id! });
+
+  //   return NextResponse.json({ message: "ok", user: deletedUser });
+  // }
 }

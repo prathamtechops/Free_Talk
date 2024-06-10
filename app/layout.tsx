@@ -30,7 +30,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>{children}</ClerkProvider>
+          <ClerkProvider
+            appearance={{
+              elements: {
+                formButtonPrimary: "bg-primary hover:bg-primary/80",
+                formButtonSecondary: "bg-secondary",
+                footerAction: "text-foreground hover:text-foreground/70",
+              },
+            }}
+          >
+            {children}
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>

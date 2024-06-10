@@ -1,7 +1,8 @@
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import { SearchInput } from "./SearchInput";
 import { ModeToggle } from "./mode-toggle";
 
-export const Navbar = async () => {
+export const Navbar = () => {
   return (
     <nav className="flex w-full items-center justify-between border-b-2 p-4 ">
       <div className="flex w-1/2 items-center justify-between ">
@@ -17,6 +18,16 @@ export const Navbar = async () => {
       <div className="flex gap-4">
         <ModeToggle />
         {/* <UsersAvatar avatar={avatar} /> */}
+        <SignedIn>
+          <UserButton
+            afterSignOutUrl="/sign-in"
+            appearance={{
+              elements: {
+                avatarBox: "w-10 h-10",
+              },
+            }}
+          />
+        </SignedIn>
       </div>
     </nav>
   );

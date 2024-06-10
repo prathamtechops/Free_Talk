@@ -1,16 +1,34 @@
 "use server";
 
 import User, { IUser } from "@/database/user.model";
-import { UserInterface } from "@/types";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
-import { CreateUserParams, GetUserById } from "./shared.types";
+import {
+  CreateUserParams,
+  GetUserByClerkId,
+  GetUserById,
+  UpdateUserParams,
+} from "./shared.types";
 
 export async function createUser(params: CreateUserParams) {
   try {
     connectToDatabase();
     const user = await User.create(params);
     return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserByClerkId(params: GetUserByClerkId) {
+  try {
+    connectToDatabase();
+    const { clerkId } = params;
+    const user = await User.findOne({
+      clerkId,
+    });
+    return user as IUser;
   } catch (error) {
     console.log(error);
     throw error;
@@ -24,42 +42,24 @@ export async function getUserById(params: GetUserById) {
     const user = await User.findById({
       _id: id,
     });
-    return user as UserInterface;
+    return user as IUser;
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
 
-export interface UpdateUserParams {
-  username?: string;
-  bio?: string;
-  id: string;
-  pathname: string;
-}
-
 export async function updateUser(params: UpdateUserParams) {
   try {
     connectToDatabase();
-    const { username, id, bio, pathname } = params;
 
-    const user: IUser | null = await User.findByIdAndUpdate(
-      {
-        _id: id,
-      },
-      {
-        username,
-        bio,
-      }
-    );
+    const { clerkId, updateData, path } = params;
+    await User.findOneAndUpdate({ clerkId }, updateData, {
+      new: true,
+    });
 
-    if (!user) throw new Error("User not found");
-
-    revalidatePath(pathname);
-
-    return user;
-  } catch (error) {
-    console.log(error);
-    throw error;
+    revalidatePath(path);
+  } catch (e) {
+    console.log(e);
   }
 }

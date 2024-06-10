@@ -1,17 +1,3 @@
-export interface UserInterface {
-  clerkId: string;
-  _id: string;
-  username: string;
-  bio: string;
-  email: string;
-  avatar: string;
-  chats: string[];
-  posts: string[];
-  followers: string[];
-  following: string[];
-  createdAt: Date;
-}
-
 export type AuthFormProps = {
   type: "login" | "register";
 };
