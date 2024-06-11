@@ -8,8 +8,8 @@ const HomeLayout = ({ children }: PropsWithChildren) => {
     <main className="flex h-screen flex-col">
       <Navbar />
       <section className="flex flex-1 overflow-hidden">
-        <Sidebar/>
-        <section className="bg-dark800_light100   grow overflow-y-auto p-10 ">
+        <Sidebar />
+        <section className="bg-dark800_light100   grow overflow-y-auto py-5  sm:p-6 md:p-10 ">
           {children}
         </section>
       </section>

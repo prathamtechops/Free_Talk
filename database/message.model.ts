@@ -1,11 +1,14 @@
 import { Document, Schema, model, models } from "mongoose";
 
-export interface IMessage extends Document {
+export interface MessageInterface {
+  _id: Schema.Types.ObjectId;
   sender: Schema.Types.ObjectId;
   chat: Schema.Types.ObjectId;
   content: string;
   createdAt: Date;
 }
+
+export interface IMessage extends Document, Omit<MessageInterface, "_id"> {}
 
 export const MessageSchema = new Schema<IMessage>({
   sender: { type: Schema.Types.ObjectId, ref: "User", required: true },

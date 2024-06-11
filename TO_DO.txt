@@ -1,7 +1,11 @@
-profile page
-email varification
-forgot password 
+profile page ui 
+//json string profile
+home page
+sidebar following list
+follow and following list 
 error page 
 not found page
-2fa
-home page 
+loading page
+
+
+

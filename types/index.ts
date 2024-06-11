@@ -4,7 +4,7 @@ export type AuthFormProps = {
 
 export interface UserAvatarTypes {
   name?: string | null | undefined;
-  avatar: string | null | undefined;
+  avatar: string | undefined;
   subText?: string | null | undefined;
   className?: string;
   avatarSize?: string;

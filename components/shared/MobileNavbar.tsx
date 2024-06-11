@@ -1,10 +1,13 @@
 "use client";
 import { mobileNavlinks } from "@/constants";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export const MobileNavbar = () => {
+  const { userId } = useAuth();
+
   const pathname = usePathname();
 
   return (
@@ -17,6 +20,10 @@ export const MobileNavbar = () => {
           isActive =
             (pathname?.includes(link.href) && link.href.length > 1) ||
             pathname === link.href;
+        }
+
+        if (link.name === "Profile") {
+          link.href = `/profile/${userId}`;
         }
 
         return link.href ? (
