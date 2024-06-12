@@ -1,14 +1,20 @@
+import { UserInterface } from "@/database/user.model";
+import { Schema } from "mongoose";
+
 export type AuthFormProps = {
   type: "login" | "register";
 };
 
 export interface UserAvatarTypes {
+  currentUser?: UserInterface;
   name?: string | null | undefined;
-  avatar: string | null | undefined;
+  avatar?: string | undefined;
   subText?: string | null | undefined;
   className?: string;
   avatarSize?: string;
   textClassName?: string;
+  userId?: Schema.Types.ObjectId;
+  showFollowButton?: boolean;
 }
 
 export interface UserSessionTypes {

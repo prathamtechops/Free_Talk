@@ -1,19 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { UserAvatarTypes } from "@/types";
+import FollowButton from "../actionButtons/FollowButton";
 
 export default function UsersAvatar({
+  currentUser,
   name,
   avatar,
   subText,
   className,
   avatarSize = "size-9",
   textClassName,
+  userId,
+  showFollowButton = false,
 }: UserAvatarTypes) {
   return (
     <div className={cn("flex gap-3", className)}>
       <Avatar className={`${avatarSize}`}>
-        <AvatarImage src={avatar || ""} alt={name ? name[0] : ""} />
+        <AvatarImage src={avatar} alt={name ? name[0] : ""} />
         <AvatarFallback>
           <span>{name ? name[0] : ""}</span>
         </AvatarFallback>
@@ -26,6 +30,15 @@ export default function UsersAvatar({
           <p className="truncate text-xs text-muted-foreground">{subText}</p>
         </div>
       )}
+      <div className="ml-auto">
+        {showFollowButton && userId && (
+          <FollowButton
+            isFollowing={currentUser?.following.includes(userId)}
+            userId={currentUser?._id}
+            potentialUserId={userId}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Document, Schema, model, models } from "mongoose";
 
-export interface IPost extends Document {
+export interface PostInterface {
+  _id: Schema.Types.ObjectId;
   author: Schema.Types.ObjectId;
   content: string;
   likes: Schema.Types.ObjectId[];
@@ -8,6 +9,8 @@ export interface IPost extends Document {
   shares: Schema.Types.ObjectId[];
   createdAt: Date;
 }
+
+export interface IPost extends Document, Omit<PostInterface, "_id"> {}
 
 export const PostSchema = new Schema<IPost>({
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },

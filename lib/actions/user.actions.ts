@@ -1,6 +1,6 @@
 "use server";
 
-import User, { IUser } from "@/database/user.model";
+import User, { IUser, UserInterface } from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
 import {
@@ -25,10 +25,11 @@ export async function getUserByClerkId(params: GetUserByClerkId) {
   try {
     connectToDatabase();
     const { clerkId } = params;
-    const user = await User.findOne({
+    const user: IUser | null = await User.findOne({
       clerkId,
     });
-    return user as IUser;
+
+    return user as UserInterface;
   } catch (error) {
     console.log(error);
     throw error;
