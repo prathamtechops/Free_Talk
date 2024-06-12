@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
 import { auth } from "@clerk/nextjs/server";
-import UsersAvatar from "./UsersAvatar";
+import UsersAvatar from "../shared/UsersAvatar";
 
 export const HomePostField = async () => {
   const { userId } = auth();

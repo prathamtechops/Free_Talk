@@ -1,4 +1,5 @@
-import { HomePostField } from "@/components/shared/HomePostField";
+import { HomePostField } from "@/components/home/HomePostField";
+import Suggestions from "@/components/home/Suggestions";
 import { PostCard } from "@/components/shared/PostCard";
 
 const Home = async () => {
@@ -9,7 +10,9 @@ const Home = async () => {
         <HomePostField />
         <PostCard />
       </div>
-      <div className="hidden md:block">Suggestion</div>
+      <div className="hidden md:block">
+        <Suggestions />
+      </div>
     </div>
   );
 };

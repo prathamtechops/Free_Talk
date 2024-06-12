@@ -9,24 +9,6 @@ export interface CreateUserParams {
   avatar: string;
 }
 
-export interface GetVerificationTokenByEmail {
-  email: string;
-}
-
-export interface GetVerificationTokenByToken {
-  token: string;
-}
-
-export interface VerificationTokenId {
-  id: Schema.Types.ObjectId;
-}
-
-export interface CreateVerificationToken {
-  email: string;
-  token: string;
-  expires: Date;
-}
-
 export interface GetUserById {
   id: Schema.Types.ObjectId | string | undefined;
 }
@@ -39,4 +21,8 @@ export interface UpdateUserParams {
   clerkId: string;
   updateData: Partial<IUser>;
   path: string;
+}
+
+export interface GetSuggestedUsers {
+  userId: string | null;
 }
