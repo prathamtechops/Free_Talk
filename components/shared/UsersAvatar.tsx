@@ -33,6 +33,7 @@ export default function UsersAvatar({
       <div className="ml-auto">
         {showFollowButton && userId && (
           <FollowButton
+            isRequestSent={currentUser?.followRequestSent?.includes(userId)}
             isFollowing={currentUser?.following.includes(userId)}
             userId={currentUser?._id}
             potentialUserId={userId}

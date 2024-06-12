@@ -15,6 +15,9 @@ export interface UserInterface {
   shares: Schema.Types.ObjectId[];
   followers: Schema.Types.ObjectId[];
   following: Schema.Types.ObjectId[];
+  followRequests: Schema.Types.ObjectId[];
+  blocked: Schema.Types.ObjectId[];
+  followRequestSent: Schema.Types.ObjectId[];
   createdAt: Date;
 }
 
@@ -34,6 +37,13 @@ export const UserSchema = new Schema<IUser>({
   shares: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],
   followers: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
   following: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
+  followRequests: [
+    { type: Schema.Types.ObjectId, ref: "User", required: false },
+  ],
+  blocked: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
+  followRequestSent: [
+    { type: Schema.Types.ObjectId, ref: "User", required: false },
+  ],
   createdAt: { type: Date, required: false },
 });
 
