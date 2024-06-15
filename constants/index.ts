@@ -1,4 +1,5 @@
 import {
+  AddIcon,
   AvatarIcon,
   BellIcon,
   ChatIcon,
@@ -17,6 +18,10 @@ export const navlinks: { name: string; href?: string; icon?: any }[] = [
     name: "Explore",
     href: "/explore",
     icon: ExploreIcon,
+  },
+  {
+    name: "Post",
+    icon: AddIcon,
   },
   {
     name: "Chat",
@@ -44,6 +49,10 @@ export const mobileNavlinks: { name: string; href?: string; icon?: any }[] = [
     name: "Explore",
     href: "/explore",
     icon: ExploreIcon,
+  },
+  {
+    name: "Post",
+    icon: AddIcon,
   },
   {
     name: "Search",

@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/context/theme-provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
@@ -39,7 +40,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <EdgeStoreProvider>{children}</EdgeStoreProvider>
           </ThemeProvider>
         </body>
       </html>

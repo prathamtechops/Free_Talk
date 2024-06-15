@@ -1,11 +1,5 @@
-profile page ui 
-//json string profile
-home page
-sidebar following list
-follow and following list 
 error page 
 not found page
 loading page
 
-
-
+add post

@@ -26,3 +26,11 @@ export interface UpdateUserParams {
 export interface GetSuggestedUsers {
   userId: string | null;
 }
+
+export interface CreatePostParams {
+  content: string;
+  tags: string[];
+  author: string;
+  imageUrl: string;
+  path: string;
+}

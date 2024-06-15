@@ -36,3 +36,11 @@ export const editUserSchema = z.object({
     .optional(),
   bio: z.string().optional(),
 });
+
+export const addPostSchema = z.object({
+  content: z.string().min(1),
+  tags: z
+    .array(z.string().min(1).max(15))
+    .min(1, "Please add at least one tag")
+    .max(3, "You can add at most 3 tags"),
+});

@@ -1,5 +1,6 @@
 import { UserInterface } from "@/database/user.model";
 import { Schema } from "mongoose";
+import React from "react";
 
 export type AuthFormProps = {
   type: "login" | "register";
@@ -36,4 +37,8 @@ export interface SearchParamsProps {
 export interface URLProps {
   params: { id: string };
   searchParams: { [key: string]: string | undefined };
+}
+
+export interface DialogParams {
+  trigger: React.ReactNode;
 }

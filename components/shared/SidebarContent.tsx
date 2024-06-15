@@ -3,6 +3,7 @@ import { navlinks } from "@/constants";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AddPostDialog } from "./AddPostDialog";
 import Notification from "./Notification";
 
 export const SidebarContent = ({
@@ -59,9 +60,25 @@ export const SidebarContent = ({
               )}
             </div>
           </Link>
+        ) : link.name === "Notifications" ? (
+          <Notification
+            trigger={
+              <div
+                className="group flex cursor-pointer gap-4 p-2 pl-5"
+                key={link.name}
+              >
+                <Icon className={cn("group-hover:scale-125 size-5")} />
+                {!hideLinkNames && (
+                  <span className="hidden lg:block" key={link.name}>
+                    {link.name}
+                  </span>
+                )}
+              </div>
+            }
+          />
         ) : (
-          link.name === "Notifications" && (
-            <Notification
+          link.name === "Post" && (
+            <AddPostDialog
               trigger={
                 <div
                   className="group flex cursor-pointer gap-4 p-2 pl-5"

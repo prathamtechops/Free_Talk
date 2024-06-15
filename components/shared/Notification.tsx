@@ -5,13 +5,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import React from "react";
+import { DialogParams } from "@/types";
 
-interface NotificationParams {
-  trigger: React.ReactNode;
-}
-
-function Notification({ trigger }: NotificationParams) {
+function Notification({ trigger }: DialogParams) {
   return (
     <Sheet>
       <SheetTrigger asChild>{trigger}</SheetTrigger>

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AddPostDialog } from "./AddPostDialog";
 
 export const MobileNavbar = () => {
   const { userId } = useAuth();
@@ -45,6 +46,21 @@ export const MobileNavbar = () => {
               )}
             </div>
           </Link>
+        ) : link.name === "Post" ? (
+          <AddPostDialog
+            trigger={
+              <div
+                className="group flex cursor-pointer gap-4 p-2 pl-5"
+                key={link.name}
+              >
+                <Icon className={cn("group-hover:scale-125 size-5")} />
+
+                <span className="hidden lg:block" key={link.name}>
+                  {link.name}
+                </span>
+              </div>
+            }
+          />
         ) : (
           <div
             className="group flex cursor-pointer gap-4 p-2 pl-5"
