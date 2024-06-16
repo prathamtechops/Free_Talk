@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -12,6 +13,7 @@ import {
 import { createPost } from "@/lib/actions/post.action";
 import { useEdgeStore } from "@/lib/edgestore";
 import { addPostSchema } from "@/lib/validation";
+import { useAddPostModal } from "@/store/addPost.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
@@ -40,6 +42,7 @@ const AddPostForm = ({ url, author }: AddPostFormProps) => {
   const { edgestore } = useEdgeStore();
   const pathname = usePathname();
   const { toast } = useToast();
+  const setOpen = useAddPostModal((state) => state.toggleDialog);
 
   const handleInputKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -52,10 +55,10 @@ const AddPostForm = ({ url, author }: AddPostFormProps) => {
       const tagValue = tagInput.value.trim();
       if (tagValue?.length === 0) return;
       if (tagValue !== "") {
-        if (field.value.length >= 3) {
+        if (field.value.length >= 5) {
           return form.setError("tags", {
             type: "required",
-            message: "You can only add up to 3 tags",
+            message: "You can only add up to 5 tags",
           });
         }
         if (tagValue.length > 15) {
@@ -98,6 +101,8 @@ const AddPostForm = ({ url, author }: AddPostFormProps) => {
         toast({
           description: res.message,
         });
+
+        setOpen();
       }
     } catch (err: any) {
       toast({
@@ -164,11 +169,21 @@ const AddPostForm = ({ url, author }: AddPostFormProps) => {
                   )}
                 </>
               </FormControl>
-
+              <FormDescription className="text-xs">
+                Add up to 5 tags.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* <Button
+          isLoading={form.formState.isSubmitting}
+          className="w-full"
+          type="submit"
+        >
+          Submit
+        </Button> */}
 
         <Button
           isLoading={form.formState.isSubmitting}

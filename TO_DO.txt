@@ -2,4 +2,4 @@ error page
 not found page
 loading page
 
-add post
+add post ui and submit button show ui in user profile and change description in tags

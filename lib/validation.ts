@@ -40,7 +40,7 @@ export const editUserSchema = z.object({
 export const addPostSchema = z.object({
   content: z.string().min(1),
   tags: z
-    .array(z.string().min(1).max(15))
-    .min(1, "Please add at least one tag")
-    .max(3, "You can add at most 3 tags"),
+    .array(z.string().max(15))
+
+    .max(5, "You can add at most 5 tags"),
 });

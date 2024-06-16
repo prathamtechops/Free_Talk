@@ -1,20 +1,13 @@
 import { cn } from "@/lib/utils";
 
-import { getUserByClerkId } from "@/lib/actions/user.actions";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import { LogoutButton } from "./LogoutButton";
 import { SidebarContent } from "./SidebarContent";
 import UsersAvatar from "./UsersAvatar";
 
 export const ChatSidebar = async () => {
-  const { userId } = auth();
+  const { user: userData, userId } = await getAuthenticatedUser();
 
-  if (!userId) {
-    return redirect("/sign-in");
-  }
-
-  const userData = await getUserByClerkId({ clerkId: userId });
   return (
     <nav
       className={cn(

@@ -6,7 +6,7 @@ import User, { IUser } from "@/database/user.model";
 import { Schema } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
-import { CreatePostParams } from "./shared.types";
+import { CreatePostParams, GetUserPostParams } from "./shared.types";
 
 export async function createPost(params: CreatePostParams) {
   try {
@@ -77,4 +77,31 @@ export async function createPost(params: CreatePostParams) {
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
+}
+
+export async function getUserPost(params: GetUserPostParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, limit, page } = params;
+
+    const posts: IPost[] | null = await Post.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .populate("author tags likes comments shares")
+      .exec();
+
+    const totalPosts = await Post.countDocuments({ author: userId });
+
+    const hasMore = totalPosts > (page - 1) * limit + posts.length;
+
+    return {
+      posts,
+      totalPosts,
+      currentPage: page,
+      totalPages: Math.ceil(totalPosts / limit),
+      hasMore,
+    };
+  } catch (error) {}
 }

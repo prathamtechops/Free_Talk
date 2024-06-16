@@ -34,3 +34,9 @@ export interface CreatePostParams {
   imageUrl: string;
   path: string;
 }
+
+export interface GetUserPostParams {
+  userId: Schema.Types.ObjectId;
+  limit: number;
+  page: number;
+}

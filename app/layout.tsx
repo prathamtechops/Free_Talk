@@ -1,3 +1,4 @@
+import Providers from "@/context/query-cleint-provider";
 import { ThemeProvider } from "@/context/theme-provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -40,7 +41,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <EdgeStoreProvider>{children}</EdgeStoreProvider>
+            <EdgeStoreProvider>
+              <Providers>{children}</Providers>
+            </EdgeStoreProvider>
           </ThemeProvider>
         </body>
       </html>

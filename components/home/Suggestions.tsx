@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSuggestedUsers } from "@/lib/actions/recommendation.action";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
-import { auth } from "@clerk/nextjs/server";
+import { getUserClerkId } from "@/lib/getAuthUser";
 import SuggestedUsers from "./SuggestedUsers";
 
 const Suggestions = async () => {
-  const { userId } = auth();
+  const userId = await getUserClerkId();
 
   const [myId, users] = await Promise.all([
     getUserByClerkId({ clerkId: userId }),

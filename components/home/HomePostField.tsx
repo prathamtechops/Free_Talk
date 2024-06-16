@@ -1,14 +1,11 @@
 import { GalleryIcon } from "@/components/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { getUserByClerkId } from "@/lib/actions/user.actions";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import UsersAvatar from "../shared/UsersAvatar";
 
 export const HomePostField = async () => {
-  const { userId } = auth();
-
-  const user = await getUserByClerkId({ clerkId: userId });
+  const { user } = await getAuthenticatedUser();
   return (
     <Card>
       <CardHeader>

@@ -1,20 +1,19 @@
 import { GalleryIcon, SaveIcon } from "@/components/icons";
 import { ProfileMetrics } from "@/components/shared/ProfileMetrics";
 import { ShareProfile } from "@/components/shared/ShareProfile";
+import UserPosts from "@/components/shared/UserPosts";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
 import { cn } from "@/lib/utils";
-import { ParamsProps } from "@/types";
+import { URLProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-const Profile = async ({ params }: ParamsProps) => {
+const Profile = async ({ params }: URLProps) => {
   const { userId } = auth();
-
-  // const userId = "df";
 
   const user = await getUserByClerkId({ clerkId: params.id });
 
@@ -107,7 +106,7 @@ const Profile = async ({ params }: ParamsProps) => {
             )}
           </TabsList>
           <TabsContent value="posts">
-            Make changes to your account here.
+            <UserPosts userId={user._id} />
           </TabsContent>
           {userId === user?.clerkId && (
             <TabsContent value="saved">Change your password here.</TabsContent>

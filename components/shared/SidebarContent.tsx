@@ -6,11 +6,7 @@ import { usePathname } from "next/navigation";
 import { AddPostDialog } from "./AddPostDialog";
 import Notification from "./Notification";
 
-export const SidebarContent = ({
-  clerkId,
-}: {
-  clerkId: string | undefined;
-}) => {
+export const SidebarContent = ({ clerkId }: { clerkId: string | null }) => {
   const pathname = usePathname();
 
   const hideLinkNames = pathname?.includes("/chat") || pathname === "/chat";

@@ -1,6 +1,5 @@
 import { HomePostField } from "@/components/home/HomePostField";
 import Suggestions from "@/components/home/Suggestions";
-import { AddPostDialog } from "@/components/shared/AddPostDialog";
 import { PostCard } from "@/components/shared/PostCard";
 
 const Home = async () => {
@@ -10,7 +9,6 @@ const Home = async () => {
         {/* Story Session TODO */}
         <HomePostField />
         <PostCard />
-        <AddPostDialog />
       </div>
       <div className="hidden md:block">
         <Suggestions />
