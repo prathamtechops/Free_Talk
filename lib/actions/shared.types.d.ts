@@ -37,6 +37,6 @@ export interface CreatePostParams {
 
 export interface GetUserPostParams {
   userId: Schema.Types.ObjectId;
-  limit: number;
-  page: number;
+  limit?: number;
+  page?: number;
 }

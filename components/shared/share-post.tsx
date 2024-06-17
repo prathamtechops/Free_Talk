@@ -140,14 +140,14 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
           <input ref={ref} {...getInputProps()} />
 
           {imageUrl ? (
-            // Image Preview
-            <Image
-              src={imageUrl}
-              alt={acceptedFiles[0]?.name ?? ""}
-              width={width}
-              height={height}
-              className="object-cover"
-            />
+            <div className="relative" style={{ width, height }}>
+              <Image
+                src={imageUrl}
+                alt={acceptedFiles[0]?.name ?? ""}
+                className="absolute aspect-square object-cover"
+                fill
+              />
+            </div>
           ) : (
             // Upload Icon
             <div className="flex flex-col items-center justify-center text-xs text-muted-foreground">

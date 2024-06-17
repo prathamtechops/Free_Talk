@@ -4,6 +4,7 @@ import { ShareProfile } from "@/components/shared/ShareProfile";
 import UserPosts from "@/components/shared/UserPosts";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getUserPosts } from "@/lib/actions/post.action";
 import { getUserByClerkId } from "@/lib/actions/user.actions";
 import { cn } from "@/lib/utils";
 import { URLProps } from "@/types";
@@ -16,6 +17,10 @@ const Profile = async ({ params }: URLProps) => {
   const { userId } = auth();
 
   const user = await getUserByClerkId({ clerkId: params.id });
+
+  const posts = await getUserPosts({
+    userId: user?._id,
+  });
 
   if (!user) {
     redirect("/sign-in");
@@ -33,7 +38,7 @@ const Profile = async ({ params }: URLProps) => {
             className=" rounded-full lg:-mt-20"
           />
           <div className="">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold lg:text-center">
               {user?.username}
               {userId !== user?.clerkId && (
                 <span className="ml-2 rounded-full bg-primary px-2 text-xs font-bold text-white">
@@ -106,7 +111,10 @@ const Profile = async ({ params }: URLProps) => {
             )}
           </TabsList>
           <TabsContent value="posts">
-            <UserPosts userId={user._id} />
+            <UserPosts
+              userId={JSON.parse(JSON.stringify(user?._id))}
+              userPosts={posts}
+            />
           </TabsContent>
           {userId === user?.clerkId && (
             <TabsContent value="saved">Change your password here.</TabsContent>

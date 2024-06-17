@@ -79,29 +79,40 @@ export async function createPost(params: CreatePostParams) {
   }
 }
 
-export async function getUserPost(params: GetUserPostParams) {
+export async function getUserPosts(params: GetUserPostParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
 
-    const { userId, limit, page } = params;
+    const { userId, page = 1, limit = 10 } = params;
 
-    const posts: IPost[] | null = await Post.find({ author: userId })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip((page - 1) * limit)
-      .populate("author tags likes comments shares")
+    const user: IUser | null = await User.findById(userId)
+      .populate({
+        path: "posts",
+        options: {
+          sort: { createdAt: -1 },
+          skip: (page - 1) * limit,
+          limit,
+        },
+        populate: { path: "author tags likes comment shares" },
+      })
       .exec();
 
-    const totalPosts = await Post.countDocuments({ author: userId });
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-    const hasMore = totalPosts > (page - 1) * limit + posts.length;
+    const totalPosts = await Post.countDocuments({ author: userId });
+    const fetchedPostsCount = (page - 1) * limit + user.posts.length;
+    const hasMore = fetchedPostsCount < totalPosts;
 
     return {
-      posts,
+      posts: JSON.parse(JSON.stringify(user.posts)),
       totalPosts,
       currentPage: page,
       totalPages: Math.ceil(totalPosts / limit),
       hasMore,
     };
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
 }

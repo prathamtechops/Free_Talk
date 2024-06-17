@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 let isConnected: boolean = false;
 
 export const connectToDatabase = async () => {
-  mongoose.set("strictQuery", true);
+  // strictPopulate
+  mongoose.set("strictPopulate", false);
 
   if (!process.env.MONGODB_URI) {
     return console.log("MONGO_URI is not defined");
