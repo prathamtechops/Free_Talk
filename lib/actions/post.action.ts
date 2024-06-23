@@ -6,7 +6,11 @@ import User, { IUser } from "@/database/user.model";
 import { Schema } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
-import { CreatePostParams, GetUserPostParams } from "./shared.types";
+import {
+  CreatePostParams,
+  GetUserFeedParams,
+  GetUserPostParams,
+} from "./shared.types";
 
 export async function createPost(params: CreatePostParams) {
   try {
@@ -88,12 +92,12 @@ export async function getUserPosts(params: GetUserPostParams) {
     const user: IUser | null = await User.findById(userId)
       .populate({
         path: "posts",
+        select: "content imageUrl likes comments",
         options: {
           sort: { createdAt: -1 },
           skip: (page - 1) * limit,
           limit,
         },
-        populate: { path: "author tags likes comment shares" },
       })
       .exec();
 
@@ -102,15 +106,64 @@ export async function getUserPosts(params: GetUserPostParams) {
     }
 
     const totalPosts = await Post.countDocuments({ author: userId });
-    const fetchedPostsCount = (page - 1) * limit + user.posts.length;
-    const hasMore = fetchedPostsCount < totalPosts;
 
     return {
       posts: JSON.parse(JSON.stringify(user.posts)),
-      totalPosts,
-      currentPage: page,
       totalPages: Math.ceil(totalPosts / limit),
-      hasMore,
+    };
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function getUserFeed(params: GetUserFeedParams) {
+  try {
+    await connectToDatabase();
+
+    const { userId, page = 1, limit = 5 } = params;
+
+    const user: IUser | null = await User.findById(userId)
+      .select("following")
+      .exec();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userAndFollowingIds = [user._id, ...user.following];
+
+    const post = await Post.find({ author: { $in: userAndFollowingIds } })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "author",
+        select: "_id username name avatar",
+      })
+      .populate({
+        path: "tags",
+        select: "_id username name",
+      })
+      .populate({
+        path: "comment",
+        select: "content author",
+        populate: {
+          path: "author",
+          select: "name avatar",
+        },
+        options: {
+          sort: { createdAt: -1 },
+        },
+      })
+      .exec();
+
+    const totalPosts = await Post.countDocuments({
+      author: { $in: userAndFollowingIds },
+    });
+
+    return {
+      posts: JSON.parse(JSON.stringify(post)),
+      totalPages: Math.ceil(totalPosts / limit),
     };
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");

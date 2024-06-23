@@ -40,3 +40,9 @@ export interface GetUserPostParams {
   limit?: number;
   page?: number;
 }
+
+export interface GetUserFeedParams {
+  userId: Schema.Types.ObjectId;
+  limit?: number;
+  page?: number;
+}

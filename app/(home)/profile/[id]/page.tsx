@@ -110,14 +110,22 @@ const Profile = async ({ params }: URLProps) => {
               </TabsTrigger>
             )}
           </TabsList>
-          <TabsContent value="posts">
+          <TabsContent
+            className="max-h-[calc(100vh-220px)] overflow-scroll scrollbar-hide "
+            value="posts"
+          >
             <UserPosts
               userId={JSON.parse(JSON.stringify(user?._id))}
               userPosts={posts}
             />
           </TabsContent>
           {userId === user?.clerkId && (
-            <TabsContent value="saved">Change your password here.</TabsContent>
+            <TabsContent
+              className="max-h-[calc(100vh-220px)] overflow-auto scrollbar-hide "
+              value="saved"
+            >
+              <div></div>
+            </TabsContent>
           )}
         </Tabs>
       </div>

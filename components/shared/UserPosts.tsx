@@ -11,10 +11,7 @@ interface UserPostParams {
   userId: Schema.Types.ObjectId;
   userPosts: {
     posts: PostInterface[];
-    totalPosts: number;
-    currentPage: number;
     totalPages: number;
-    hasMore: boolean;
   };
 }
 
@@ -36,17 +33,15 @@ const UserPosts = ({ userId, userPosts }: UserPostParams) => {
   }, [userId, page, posts]);
 
   useEffect(() => {
-    if (inView) {
+    if (inView && userPosts.totalPages > page) {
       fetchMoreData();
     }
   }, [inView, fetchMoreData]);
 
   return (
-    <div className="scrollbar-hide grid max-h-[calc(100vh-200px)] grid-cols-1 gap-4  overflow-y-auto  md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+    <div className="flex flex-wrap gap-4 ">
       {posts?.map((post) => (
-        <div key={post._id.toString()}>
-          <PostComponent post={post} />
-        </div>
+        <PostComponent key={post._id.toString()} post={post} />
       ))}
       <div ref={ref} />
     </div>

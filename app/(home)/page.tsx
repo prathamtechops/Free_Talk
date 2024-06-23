@@ -1,6 +1,6 @@
 import { HomePostField } from "@/components/home/HomePostField";
 import Suggestions from "@/components/home/Suggestions";
-import { PostCard } from "@/components/shared/PostCard";
+import UserFeed from "@/components/home/UserFeed";
 
 const Home = async () => {
   return (
@@ -8,7 +8,8 @@ const Home = async () => {
       <div className="space-y-4 md:col-span-2">
         {/* Story Session TODO */}
         <HomePostField />
-        <PostCard />
+        {/* <PostCard /> */}
+        <UserFeed />
       </div>
       <div className="hidden md:block">
         <Suggestions />
