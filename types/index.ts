@@ -42,3 +42,22 @@ export interface URLProps {
 export interface DialogParams {
   trigger: React.ReactNode;
 }
+
+export interface PostPage {
+  _id: Schema.Types.ObjectId;
+  author: {
+    _id: Schema.Types.ObjectId;
+    name: string;
+    username: string;
+    avatar: string;
+    clerkId: string;
+  };
+  imageUrl: string;
+  tags: Schema.Types.ObjectId[];
+  content: string;
+  likes: Schema.Types.ObjectId[];
+  comments: Schema.Types.ObjectId[];
+  shares: Schema.Types.ObjectId[];
+  saved: Schema.Types.ObjectId[];
+  createdAt: Date;
+}

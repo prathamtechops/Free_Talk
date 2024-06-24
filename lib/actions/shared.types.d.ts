@@ -46,3 +46,13 @@ export interface GetUserFeedParams {
   limit?: number;
   page?: number;
 }
+
+export interface GetPostByIdParams {
+  postId: string;
+}
+
+export interface GetLikesAndCommentsByPostIdParams {
+  postId: string;
+  page?: number;
+  limit?: number;
+}

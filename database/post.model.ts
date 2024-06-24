@@ -9,6 +9,7 @@ export interface PostInterface {
   likes: Schema.Types.ObjectId[];
   comments: Schema.Types.ObjectId[];
   shares: Schema.Types.ObjectId[];
+  saved: Schema.Types.ObjectId[];
   createdAt: Date;
 }
 
@@ -22,6 +23,7 @@ export const PostSchema = new Schema<IPost>({
   tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: false }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment", required: false }],
   shares: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
+  saved: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
   createdAt: { type: Date, default: Date.now },
 });
 

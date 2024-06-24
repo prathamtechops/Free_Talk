@@ -33,7 +33,7 @@ const Feeds = ({ userId, posts, totalPages }: PostFeedInterface) => {
     if (inView && totalPages > page) {
       fetchMoreData();
     }
-  }, [inView, fetchMoreData]);
+  }, [inView, fetchMoreData, page, totalPages]);
 
   return (
     <div className="space-y-4">
@@ -43,7 +43,7 @@ const Feeds = ({ userId, posts, totalPages }: PostFeedInterface) => {
       <div ref={ref}>
         {totalPages > page && (
           <div className="text-center">
-            <ReloadIcon className="text-3xl mx-auto animate-spin text-primary" />
+            <ReloadIcon className="mx-auto animate-spin text-3xl text-primary" />
           </div>
         )}
       </div>

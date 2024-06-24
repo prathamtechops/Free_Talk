@@ -1,13 +1,17 @@
 "use server";
 
+import Comment, { CommentInterface, IComment } from "@/database/comment.model";
 import Post, { IPost } from "@/database/post.model";
 import Tag from "@/database/tag.model";
-import User, { IUser } from "@/database/user.model";
+import User, { IUser, UserInterface } from "@/database/user.model";
+import { PostPage } from "@/types";
 import { Schema } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
 import {
   CreatePostParams,
+  GetLikesAndCommentsByPostIdParams,
+  GetPostByIdParams,
   GetUserFeedParams,
   GetUserPostParams,
 } from "./shared.types";
@@ -140,21 +144,6 @@ export async function getUserFeed(params: GetUserFeedParams) {
         path: "author",
         select: "_id username name avatar",
       })
-      .populate({
-        path: "tags",
-        select: "_id username name",
-      })
-      .populate({
-        path: "comment",
-        select: "content author",
-        populate: {
-          path: "author",
-          select: "name avatar",
-        },
-        options: {
-          sort: { createdAt: -1 },
-        },
-      })
       .exec();
 
     const totalPosts = await Post.countDocuments({
@@ -165,6 +154,97 @@ export async function getUserFeed(params: GetUserFeedParams) {
       posts: JSON.parse(JSON.stringify(post)),
       totalPages: Math.ceil(totalPosts / limit),
     };
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function getPostById(params: GetPostByIdParams) {
+  try {
+    await connectToDatabase();
+
+    const { postId } = params;
+
+    const post: IPost | null = await Post.findById(postId).populate({
+      path: "author",
+      select: "_id username name avatar clerkId",
+    });
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    return JSON.parse(JSON.stringify(post)) as PostPage;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function getCommentsByPostId(
+  params: GetLikesAndCommentsByPostIdParams
+) {
+  try {
+    await connectToDatabase();
+
+    const { postId, page = 1, limit = 20 } = params;
+
+    const comments: IComment[] = await Comment.find({ post: postId })
+      .populate({
+        path: "author",
+        select: "_id username name avatar clerkId",
+      })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
+
+    const totalComments = await Comment.countDocuments({ post: postId });
+
+    const resultComments = {
+      comments: JSON.parse(JSON.stringify(comments)) as CommentInterface[],
+      totalPages: Math.ceil(totalComments / limit),
+    };
+
+    return resultComments;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export async function getLikesByPostId(
+  params: GetLikesAndCommentsByPostIdParams
+) {
+  try {
+    await connectToDatabase();
+
+    const { postId, page = 1, limit = 20 } = params;
+
+    // Find the post to get the likes array
+    const post: IPost | null = await Post.findById(postId)
+      .select("likes")
+      .lean();
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    // Get the total count of likes
+    const totalLikes = post.likes.length;
+
+    // Paginate the likes array
+    const paginatedLikes = post.likes.slice((page - 1) * limit, page * limit);
+
+    // Populate the user data for the paginated likes
+    const users: IUser[] = await User.find({ _id: { $in: paginatedLikes } })
+      .select("_id username name avatar clerkId")
+      .lean();
+
+    const resultLikes = {
+      likes: users as UserInterface[],
+      totalPages: Math.ceil(totalLikes / limit),
+    };
+
+    return resultLikes;
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }

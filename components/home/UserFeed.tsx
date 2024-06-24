@@ -9,7 +9,13 @@ const UserFeed = async () => {
 
   const { posts, totalPages } = await getUserFeed({ userId: user._id });
 
-  return <Feeds userId={user._id} posts={posts} totalPages={totalPages} />;
+  return (
+    <Feeds
+      userId={JSON.parse(JSON.stringify(user._id))}
+      posts={posts}
+      totalPages={totalPages}
+    />
+  );
 };
 
 export default UserFeed;

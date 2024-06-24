@@ -19,6 +19,7 @@ import { getTimestamp } from "@/lib/utils";
 
 import { Schema } from "mongoose";
 import Image from "next/image";
+import Link from "next/link";
 
 export interface PostCardInterface {
   _id: Schema.Types.ObjectId;
@@ -32,18 +33,9 @@ export interface PostCardInterface {
   imageUrl: string;
   tags: Schema.Types.ObjectId[];
   content: string;
+  saved: Schema.Types.ObjectId[];
   likes: Schema.Types.ObjectId[];
-  comments: {
-    _id: Schema.Types.ObjectId;
-    content: string;
-    author: {
-      _id: Schema.Types.ObjectId;
-      clerkId: string;
-      avatar: string;
-      username: string;
-      name: string;
-    };
-  }[];
+  comments: Schema.Types.ObjectId[];
   shares: Schema.Types.ObjectId[];
   createdAt: Date;
 }
@@ -55,7 +47,7 @@ export const PostCard = ({ post }: { post: PostCardInterface }) => {
         <div className="flex items-center justify-between">
           <UsersAvatar
             avatar={post.author.avatar}
-            name={post.author.name}
+            name={post.author.username}
             subText={getTimestamp(post.createdAt)}
           />
 
@@ -77,18 +69,25 @@ export const PostCard = ({ post }: { post: PostCardInterface }) => {
       <CardContent className="flex  flex-col">
         <p className="text-pretty text-sm font-thin ">{post.content}</p>
         {/* /TODO: Add image */}
-        <div className="relative w-full h-80 mt-4">
-          <Image
-            src={post.imageUrl}
-            alt={post.content}
-            fill
-            className="object-cover aspect-square absolute"
-          />
-        </div>
+        <Link href={`/post/${post._id}`}>
+          <div className="relative mt-4 h-96 w-full">
+            <Image
+              src={post.imageUrl}
+              alt={post.content}
+              fill
+              className="absolute aspect-square object-cover"
+            />
+          </div>
+        </Link>
       </CardContent>
       <div className="border-b-2" />
       <CardFooter>
-        <Metrics />
+        <Metrics
+          comments={post.comments.length}
+          likes={post.likes.length}
+          shares={post.shares.length}
+          saved={post?.saved?.length}
+        />
       </CardFooter>
     </Card>
   );
