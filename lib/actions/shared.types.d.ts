@@ -48,11 +48,11 @@ export interface GetUserFeedParams {
 }
 
 export interface GetPostByIdParams {
-  postId: string;
+  postId: string | Schema.Types.ObjectId;
 }
 
 export interface GetLikesAndCommentsByPostIdParams {
-  postId: string;
+  postId: string | Schema.Types.ObjectId;
   page?: number;
   limit?: number;
 }

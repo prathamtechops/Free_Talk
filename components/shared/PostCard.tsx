@@ -1,5 +1,4 @@
 import { MenuIcon } from "@/components/icons";
-import { Metrics } from "@/components/shared/Metrics";
 import UsersAvatar from "@/components/shared/UsersAvatar";
 import {
   Card,
@@ -15,11 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UserInterface } from "@/database/user.model";
 import { getTimestamp } from "@/lib/utils";
 
 import { Schema } from "mongoose";
 import Image from "next/image";
 import Link from "next/link";
+import { Metrics } from "./Metrics";
 
 export interface PostCardInterface {
   _id: Schema.Types.ObjectId;
@@ -40,7 +41,13 @@ export interface PostCardInterface {
   createdAt: Date;
 }
 
-export const PostCard = ({ post }: { post: PostCardInterface }) => {
+export const PostCard = ({
+  post,
+  user,
+}: {
+  post: PostCardInterface;
+  user: UserInterface;
+}) => {
   return (
     <Card>
       <CardHeader>
@@ -82,11 +89,10 @@ export const PostCard = ({ post }: { post: PostCardInterface }) => {
       </CardContent>
       <div className="border-b-2" />
       <CardFooter>
-        <Metrics
-          comments={post.comments.length}
-          likes={post.likes.length}
-          shares={post.shares.length}
-          saved={post?.saved?.length}
+      <Metrics
+          user={JSON.parse(JSON.stringify(user))}
+          post={post}
+          showText={true}
         />
       </CardFooter>
     </Card>

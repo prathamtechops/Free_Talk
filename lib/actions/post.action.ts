@@ -249,3 +249,60 @@ export async function getLikesByPostId(
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 }
+
+export interface LikeOrUnlikePostParams {
+  userId: Schema.Types.ObjectId;
+  postId: Schema.Types.ObjectId;
+  pathname: string;
+}
+
+export async function likeOrUnlikePost(params: LikeOrUnlikePostParams) {
+  try {
+    await connectToDatabase();
+
+    const { userId, postId, pathname } = params;
+
+    // Perform the like/unlike operation atomically
+    const post: IPost | null = await Post.findById(postId);
+    const user: IUser | null = await User.findById(userId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userIndex = post.likes.indexOf(userId);
+    const postIndex = user.likes.indexOf(postId);
+
+    if (userIndex === -1 && postIndex === -1) {
+      // User has not liked the post yet
+      await Promise.all([
+        Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }),
+        User.findByIdAndUpdate(userId, { $addToSet: { likes: postId } }),
+      ]);
+    } else if (userIndex !== -1 && postIndex !== -1) {
+      // User has already liked the post
+      await Promise.all([
+        Post.findByIdAndUpdate(postId, { $pull: { likes: userId } }),
+        User.findByIdAndUpdate(userId, { $pull: { likes: postId } }),
+      ]);
+    } else {
+      throw new Error("Inconsistent like state between post and user");
+    }
+
+    revalidatePath(pathname);
+
+    return {
+      success: true,
+      message:
+        userIndex === -1
+          ? "Post liked successfully"
+          : "Post unliked successfully",
+    };
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}

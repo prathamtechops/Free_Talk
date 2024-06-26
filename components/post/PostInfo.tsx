@@ -1,14 +1,17 @@
-import { CommentInterface } from "@/database/comment.model";
+import { UserInterface } from "@/database/user.model";
+import { getCommentsByPostId } from "@/lib/actions/post.action";
+import { PostPage } from "@/types";
 import { Metrics } from "../shared/Metrics";
 import UsersAvatar from "../shared/UsersAvatar";
 import { Input } from "../ui/input";
 
 interface PostInfoInterface {
-  comments: CommentInterface[];
-  likes: number;
+  post: PostPage;
+  user: UserInterface;
 }
 
-export default function PostInfo({ comments, likes }: PostInfoInterface) {
+export default async function PostInfo({ post, user }: PostInfoInterface) {
+  const result = await getCommentsByPostId({ postId: post._id });
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
       <div className="space-y-4">
@@ -22,19 +25,14 @@ export default function PostInfo({ comments, likes }: PostInfoInterface) {
         showText={false}
         textStyles="text-base"
         iconStyles="size-5"
-        comments={comments.length}
-        likes={likes}
-        shares={0}
-        saved={0}
+        post={post}
+        user={user}
       />
       <div className="max-h-[300px] flex-1 space-y-4 overflow-y-auto">
-        {comments.map((_, index) => (
+        {result.comments.map((comment, index) => (
           <div key={index} className="flex items-start gap-4">
             <UsersAvatar avatar="/placeholder-user.jpg" />
-            <div className="flex-1">
-              Wow, this post is absolutely hilarious! The king&apos;s joke tax
-              idea is genius.
-            </div>
+            <div className="flex-1">Jk</div>
           </div>
         ))}
       </div>

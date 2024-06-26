@@ -9,11 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getCommentsByPostId,
-  getLikesByPostId,
-  getPostById,
-} from "@/lib/actions/post.action";
+import { getPostById } from "@/lib/actions/post.action";
+import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import { getTimestamp } from "@/lib/utils";
 import { ParamsProps } from "@/types";
 import Image from "next/image";
@@ -24,11 +21,9 @@ export default async function PostPage({ params }: ParamsProps) {
 
   const postId = { postId: id };
 
-  const [post, resultComments, resultLikes] = await Promise.all([
-    getPostById(postId),
-    getCommentsByPostId(postId),
-    getLikesByPostId(postId),
-  ]);
+  const post = await getPostById(postId);
+
+  const { user } = await getAuthenticatedUser();
 
   if (!post) {
     return null;
@@ -73,10 +68,7 @@ export default async function PostPage({ params }: ParamsProps) {
               className="aspect-square object-cover"
             />
           </CardContent>
-          <PostInfo
-            likes={resultLikes.likes.length}
-            comments={resultComments.comments}
-          />
+          <PostInfo post={post} user={user} />
         </div>
       </Card>
     </div>

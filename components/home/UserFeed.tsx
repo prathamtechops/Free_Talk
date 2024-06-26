@@ -11,7 +11,7 @@ const UserFeed = async () => {
 
   return (
     <Feeds
-      userId={JSON.parse(JSON.stringify(user._id))}
+      user={JSON.parse(JSON.stringify(user))}
       posts={posts}
       totalPages={totalPages}
     />

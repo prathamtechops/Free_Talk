@@ -43,7 +43,7 @@ export async function getUserById(params: GetUserById) {
     const user = await User.findById({
       _id: id,
     });
-    return user as IUser;
+    return user as UserInterface;
   } catch (error) {
     console.log(error);
     throw error;
