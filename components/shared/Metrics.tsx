@@ -12,14 +12,13 @@ interface MetricInterface {
   user?: UserInterface;
 }
 
-export const Metrics =  ({
+export const Metrics = ({
   post,
   textStyles = "",
   iconStyles = "",
   showText = true,
   user,
 }: MetricInterface) => {
-
   return (
     <div className="flex w-full justify-between">
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>
@@ -33,11 +32,11 @@ export const Metrics =  ({
       </div>
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>
         <LikeButton
-          user={JSON.parse(JSON.stringify(user))}
           iconStyle={iconStyles}
           post={post}
           showText={showText}
-        
+          userId={JSON.parse(JSON.stringify(user?._id))}
+          isLiked={!!user?.likes.includes(post?._id)}
         />
       </div>
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>

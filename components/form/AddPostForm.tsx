@@ -100,6 +100,7 @@ const AddPostForm = ({ url, author }: AddPostFormProps) => {
       if (res.success) {
         toast({
           description: res.message,
+          variant: "success",
         });
 
         setOpen();

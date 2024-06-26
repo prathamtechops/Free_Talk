@@ -1,11 +1,11 @@
 "use client";
 
-import { UserInterface } from "@/database/user.model";
 import { likeOrUnlikePost } from "@/lib/actions/post.action";
 import { cn } from "@/lib/utils";
 import { useLikesStore } from "@/store/like.store";
 import { PostPage } from "@/types";
 import { Heart } from "lucide-react";
+import { Schema } from "mongoose";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PostLikedByUser } from "../shared/PostLikesByUser";
@@ -14,33 +14,22 @@ interface LikeButtonProps {
   iconStyle?: string;
   post: PostPage;
   showText?: boolean;
-  user: UserInterface;
+  userId: Schema.Types.ObjectId;
+  isLiked: boolean;
 }
 
-const LikeButton = ({ iconStyle, post, showText, user }: LikeButtonProps) => {
+const LikeButton = ({
+  iconStyle,
+  post,
+  showText,
+  userId,
+  isLiked,
+}: LikeButtonProps) => {
   const setLike = useLikesStore((state) => state.setLike);
   const likes = useLikesStore((state) => state.likes);
   const pathname = usePathname();
   const [totalLikes, setTotalLikes] = useState<number>(post.likes.length);
-  const [like] = useState<boolean>(
-    likes[post?._id.toString()] || !!user?.likes.includes(post?._id)
-  );
-
-  // const [userLikes, setUserLikes] = useState<UserInterface[]>([])
-  // const [totalPages, setTotalPages] = useState<number>(0)
-
-  // useEffect(()=>{
-  //   const fetchLikeResults = async() => {
-  //     const result = await getLikesByPostId({
-  //       postId: post._id
-  //     })
-
-  //     setUserLikes(result.likes)
-  //     setTotalPages(result.totalPages)
-  //   }
-
-  //   fetchLikeResults()
-  // },[])
+  const [like] = useState<boolean>(likes[post?._id.toString()] || isLiked);
 
   useEffect(() => {
     setLike(post?._id, like);
@@ -62,7 +51,7 @@ const LikeButton = ({ iconStyle, post, showText, user }: LikeButtonProps) => {
     setLike(post?._id, value);
 
     try {
-      await likeOrUnlikePost({ userId: user._id, postId: post._id, pathname });
+      await likeOrUnlikePost({ userId, postId: post._id, pathname });
     } catch (err) {
       console.log(err);
       setLike(post._id, currentValue);
@@ -85,7 +74,7 @@ const LikeButton = ({ iconStyle, post, showText, user }: LikeButtonProps) => {
       />
       <p className="space-x-1">
         <span>{totalLikes}</span>
-        {showText && <PostLikedByUser postId={post._id} userId={user._id} />}
+        {showText && <PostLikedByUser postId={post._id} userId={userId} />}
       </p>
     </>
   );

@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { UserAvatarTypes } from "@/types";
+import { Schema } from "mongoose";
 import FollowButton from "../actionButtons/FollowButton";
 
 export default function UsersAvatar({
@@ -33,10 +34,10 @@ export default function UsersAvatar({
       <div className="ml-auto">
         {showFollowButton && userId && (
           <FollowButton
-            isRequestSent={currentUser?.followRequestSent?.includes(userId)}
-            isFollowing={currentUser?.following.includes(userId)}
-            userId={currentUser?._id}
-            potentialUserId={userId}
+            isRequestSent={!!currentUser?.followRequestSent?.includes(userId)}
+            isFollowing={!!currentUser?.following.includes(userId)}
+            userId={currentUser?._id ?? ({} as Schema.Types.ObjectId)}
+            potentialUserId={userId ?? ({} as Schema.Types.ObjectId)}
           />
         )}
       </div>

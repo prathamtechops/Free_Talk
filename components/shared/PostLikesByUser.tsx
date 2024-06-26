@@ -10,7 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserInterface } from "@/database/user.model";
+import { getLikesByPostId } from "@/lib/actions/post.action";
 import { Schema } from "mongoose";
+import { useEffect, useState } from "react";
 
 interface PostLikedByUserInterface {
   postId: Schema.Types.ObjectId;
@@ -18,6 +21,21 @@ interface PostLikedByUserInterface {
 }
 
 export function PostLikedByUser({ postId, userId }: PostLikedByUserInterface) {
+  const [userLikes, setUserLikes] = useState<UserInterface[]>([]);
+  const [totalPages, setTotalPages] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchLikeResults = async () => {
+      const result = await getLikesByPostId({
+        postId,
+      });
+
+      setUserLikes(result.likes);
+      setTotalPages(result.totalPages);
+    };
+
+    fetchLikeResults();
+  }, []);
   return (
     <Dialog>
       <DialogTrigger>Like</DialogTrigger>
