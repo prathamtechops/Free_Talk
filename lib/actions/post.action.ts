@@ -62,6 +62,8 @@ export async function createPost(params: CreatePostParams) {
       tagDocuments.push(tagDocument._id);
     }
 
+    // TODO: Send notification to followers
+
     await Post.findByIdAndUpdate(newPost._id, {
       $push: {
         tags: {
@@ -278,6 +280,7 @@ export async function likeOrUnlikePost(params: LikeOrUnlikePostParams) {
     const postIndex = user.likes.indexOf(postId);
 
     if (userIndex === -1 && postIndex === -1) {
+      // TODO: Send notification to the post author
       // User has not liked the post yet
       await Promise.all([
         Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }),

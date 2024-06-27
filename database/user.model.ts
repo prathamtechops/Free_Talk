@@ -15,11 +15,14 @@ export interface UserInterface {
   shares: Schema.Types.ObjectId[];
   followers: Schema.Types.ObjectId[];
   following: Schema.Types.ObjectId[];
+  notification: Schema.Types.ObjectId[];
   followRequests: Schema.Types.ObjectId[];
   blocked: Schema.Types.ObjectId[];
   followRequestSent: Schema.Types.ObjectId[];
   createdAt: Date;
 }
+
+// TODO: Add Notifcation Schema
 
 export interface IUser extends Document, Omit<UserInterface, "_id"> {}
 
@@ -35,6 +38,9 @@ export const UserSchema = new Schema<IUser>({
   posts: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],
   saved: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],
   shares: [{ type: Schema.Types.ObjectId, ref: "Post", required: false }],
+  notification: [
+    { type: Schema.Types.ObjectId, ref: "Notification", required: false },
+  ],
   followers: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
   following: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
   followRequests: [

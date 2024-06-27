@@ -1,15 +1,9 @@
 "use server";
 
 import User, { IUser } from "@/database/user.model";
-import { Schema } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
-
-export interface FollowRequestParams {
-  userId: Schema.Types.ObjectId;
-  potentialUserId: Schema.Types.ObjectId;
-  pathname: string;
-}
+import { FollowRequestParams } from "./shared.types";
 
 export async function sendFollowRequest(params: FollowRequestParams) {
   try {
@@ -31,6 +25,8 @@ export async function sendFollowRequest(params: FollowRequestParams) {
     if (user.followRequestSent.includes(potentialUserId)) {
       throw new Error("Follow request already sent");
     }
+
+    // TODO: Send notification
 
     await Promise.all([
       User.findByIdAndUpdate(userId, {
@@ -72,6 +68,8 @@ export async function acceptFollowRequest(params: FollowRequestParams) {
     if (!user.followRequests.includes(potentialUserId)) {
       throw new Error("Follow request not found");
     }
+
+    // TODO: Send notification
 
     await Promise.all([
       User.findByIdAndUpdate(userId, {

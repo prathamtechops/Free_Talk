@@ -56,3 +56,9 @@ export interface GetLikesAndCommentsByPostIdParams {
   page?: number;
   limit?: number;
 }
+
+export interface FollowRequestParams {
+  userId: Schema.Types.ObjectId;
+  potentialUserId: Schema.Types.ObjectId;
+  pathname: string;
+}
