@@ -1,120 +1,116 @@
 "use client";
 
 import {
+  acceptFollowRequest,
   removeFollowRequest,
   sendFollowRequest,
 } from "@/lib/actions/follow.action";
-import { useFollowsStore } from "@/store/follow.store";
 import { Schema } from "mongoose";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 
 interface FollowButtonProps {
   userId: Schema.Types.ObjectId;
   potentialUserId: Schema.Types.ObjectId;
-  isFollowing: boolean;
-  isRequestSent: boolean;
+  type: "follow" | "unfollow" | "request" | "accept" | "remove" | "reject";
 }
-const FollowButton = ({
-  userId,
-  potentialUserId,
-  isFollowing,
-  isRequestSent,
-}: FollowButtonProps) => {
-  const followers = useFollowsStore((state) => state.follows);
-  const setFollow = useFollowsStore((state) => state.setFollow);
-  const [follow] = useState(
-    followers[potentialUserId?.toString()] || isFollowing
-      ? "unfollow"
-      : isRequestSent
-        ? "request"
-        : "follow"
-  );
+
+const FollowButton = ({ userId, potentialUserId, type }: FollowButtonProps) => {
+  const [followState, setFollowState] = useState<
+    | "follow"
+    | "unfollow"
+    | "request"
+    | "accept"
+    | "accepted"
+    | "remove"
+    | "reject"
+  >(type);
 
   const pathname = usePathname();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (follow === "unfollow") {
-      setFollow(potentialUserId, "follow");
-    }
-    if (follow === "follow") {
-      setFollow(potentialUserId, "unfollow");
-    }
-    if (follow === "request") {
-      setFollow(potentialUserId, "requested");
-    }
-  }, [follow, potentialUserId, setFollow]);
-
   const handleFollow = async () => {
-    const currentValue = followers[potentialUserId?.toString()];
+    const currentValue = followState;
+    let action;
+    let newState: typeof followState;
+    let successMessage: string;
 
-    if (currentValue === "requested") {
-      setFollow(potentialUserId, "unfollow");
-
-      try {
-        const res = await removeFollowRequest({
-          userId,
-          potentialUserId,
-          pathname,
-        });
-
-        toast({
-          description: res?.message,
-          variant: "success",
-        });
-      } catch (error) {
-        console.log(error);
-        setFollow(potentialUserId, currentValue);
-
-        toast({
-          description: error instanceof Error ? error.message : "Unknown error",
-          variant: "destructive",
-        });
-      }
+    switch (currentValue) {
+      case "request":
+        newState = "follow";
+        action = removeFollowRequest;
+        successMessage = "Request removed successfully";
+        break;
+      case "follow":
+        newState = "request";
+        action = sendFollowRequest;
+        successMessage = "Follow request sent successfully";
+        break;
+      case "accept":
+        newState = "accepted";
+        action = acceptFollowRequest;
+        successMessage = "Follow request accepted successfully";
+        break;
+      default:
+        return;
     }
 
-    if (currentValue === "unfollow") {
-      setFollow(potentialUserId, "requested");
+    setFollowState(newState);
 
-      try {
-        const res = await sendFollowRequest({
-          userId,
-          potentialUserId,
-          pathname,
-        });
+    try {
+      const res = await action({
+        userId,
+        potentialUserId,
+        pathname,
+      });
 
-        toast({
-          description: res?.message,
-          variant: "success",
-        });
-      } catch (error) {
-        console.log(error);
-        setFollow(potentialUserId, currentValue);
+      toast({
+        description: res?.message || successMessage,
+        variant: "success",
+      });
+    } catch (error) {
+      console.error(error);
 
-        toast({
-          description: error instanceof Error ? error.message : "Unknown error",
-          variant: "destructive",
-        });
-      }
+      setFollowState(currentValue);
+
+      toast({
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
     }
   };
 
+  const getButtonText = () => {
+    switch (followState) {
+      case "request":
+        return "Request Sent";
+      case "follow":
+        return "Follow";
+      case "accept":
+        return "Accept";
+      case "accepted":
+        return "Accepted";
+      case "remove":
+        return "Remove";
+      case "reject":
+        return "Reject";
+      case "unfollow":
+      default:
+        return "Unfollow";
+    }
+  };
+
+  const getButtonVariant = () => {
+    return followState === "request" || followState === "reject"
+      ? "outline"
+      : "default";
+  };
+
   return (
-    <Button
-      onClick={handleFollow}
-      variant={`${followers[potentialUserId?.toString()] === "requested" ? "outline" : "default"}`}
-      size="sm"
-    >
-      {followers[potentialUserId?.toString()] === "requested"
-        ? "Request Sent"
-        : followers[potentialUserId?.toString()] === "follow"
-          ? "Following"
-          : followers[potentialUserId?.toString()] === "unfollow"
-            ? "Follow"
-            : "Follow"}
+    <Button onClick={handleFollow} variant={getButtonVariant()} size="sm">
+      {getButtonText()}
     </Button>
   );
 };
