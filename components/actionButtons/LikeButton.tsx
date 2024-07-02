@@ -3,20 +3,11 @@
 import { likeOrUnlikePost } from "@/lib/actions/post.action";
 import { cn } from "@/lib/utils";
 import { useLikesStore } from "@/store/like.store";
-import { PostPage } from "@/types";
+import { LikeButtonProps } from "@/types";
 import { Heart } from "lucide-react";
-import { Schema } from "mongoose";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PostLikedByUser } from "../shared/PostLikesByUser";
-
-interface LikeButtonProps {
-  iconStyle?: string;
-  post: PostPage;
-  showText?: boolean;
-  userId: Schema.Types.ObjectId;
-  isLiked: boolean;
-}
 
 const LikeButton = ({
   iconStyle,

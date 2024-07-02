@@ -74,3 +74,37 @@ export async function deleteUser(params: GetUserByClerkId) {
     throw error;
   }
 }
+
+export async function getUserFollowingList(params: GetUserById) {
+  try {
+    connectToDatabase();
+    const { id } = params;
+    const user = await User.findById({
+      _id: id,
+    })
+      .select("following")
+      .populate({ path: "following", select: "_id clerkId username avatar" });
+
+    return JSON.parse(JSON.stringify(user?.following)) as UserInterface[];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserFollowersList(params: GetUserById) {
+  try {
+    connectToDatabase();
+    const { id } = params;
+    const user = await User.findById({
+      _id: id,
+    })
+      .select("followers")
+      .populate({ path: "followers", select: "_id clerkId username avatar" });
+
+    return JSON.parse(JSON.stringify(user?.followers)) as UserInterface[];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

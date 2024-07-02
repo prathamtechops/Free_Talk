@@ -1,4 +1,3 @@
-import { UserInterface } from "@/database/user.model";
 import { Schema } from "mongoose";
 import React from "react";
 
@@ -7,15 +6,13 @@ export type AuthFormProps = {
 };
 
 export interface UserAvatarTypes {
-  currentUser?: UserInterface;
-  name?: string | null | undefined;
-  avatar?: string | undefined;
-  subText?: string | null | undefined;
+  name?: string;
+  avatar?: string;
+  subText?: string;
   className?: string;
   avatarSize?: string;
   textClassName?: string;
-  userId?: Schema.Types.ObjectId;
-  showFollowButton?: boolean;
+  children?: React.ReactNode;
 }
 
 export interface UserSessionTypes {
@@ -41,6 +38,7 @@ export interface URLProps {
 
 export interface DialogParams {
   trigger: React.ReactNode;
+  user?: string;
 }
 
 export interface PostPage {
@@ -60,4 +58,12 @@ export interface PostPage {
   shares: Schema.Types.ObjectId[];
   saved: Schema.Types.ObjectId[];
   createdAt: Date;
+}
+
+export interface LikeButtonProps {
+  iconStyle?: string;
+  post: PostPage;
+  showText?: boolean;
+  userId: Schema.Types.ObjectId;
+  isLiked: boolean;
 }

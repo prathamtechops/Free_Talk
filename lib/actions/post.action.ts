@@ -1,6 +1,7 @@
 "use server";
 
-import Comment, { CommentInterface, IComment } from "@/database/comment.model";
+import Comment, { IComment } from "@/database/comment.model";
+import Notification from "@/database/notification.model";
 import Post, { IPost } from "@/database/post.model";
 import Tag from "@/database/tag.model";
 import User, { IUser, UserInterface } from "@/database/user.model";
@@ -62,7 +63,27 @@ export async function createPost(params: CreatePostParams) {
       tagDocuments.push(tagDocument._id);
     }
 
-    // TODO: Send notification to followers
+    const followers = user.followers;
+
+    const notifications = followers.map((follower) => ({
+      senderId: user._id,
+      receiverId: follower,
+      content: `${user.username} has added a new post.`,
+      type: "post",
+    }));
+
+    const savedNotifications = await Notification.insertMany(notifications);
+
+    const notificationIds = savedNotifications.map((notif) => notif._id);
+
+    const bulkUpdateOps = followers.map((followerId) => ({
+      updateOne: {
+        filter: { _id: followerId },
+        update: { $addToSet: { notification: { $each: notificationIds } } },
+      },
+    }));
+
+    await User.bulkWrite(bulkUpdateOps);
 
     await Post.findByIdAndUpdate(newPost._id, {
       $push: {
@@ -203,7 +224,7 @@ export async function getCommentsByPostId(
     const totalComments = await Comment.countDocuments({ post: postId });
 
     const resultComments = {
-      comments: JSON.parse(JSON.stringify(comments)) as CommentInterface[],
+      comments: JSON.parse(JSON.stringify(comments)),
       totalPages: Math.ceil(totalComments / limit),
     };
 

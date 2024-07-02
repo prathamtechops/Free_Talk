@@ -20,6 +20,7 @@ import { getTimestamp } from "@/lib/utils";
 import { Schema } from "mongoose";
 import Image from "next/image";
 import Link from "next/link";
+import { AvatarInputField } from "../home/AvatarInputField";
 import { Metrics } from "./Metrics";
 
 export interface PostCardInterface {
@@ -88,11 +89,17 @@ export const PostCard = ({
         </Link>
       </CardContent>
       <div className="border-b-2" />
-      <CardFooter>
-      <Metrics
+      <CardFooter className="flex flex-col items-start gap-3">
+        <Metrics
           user={JSON.parse(JSON.stringify(user))}
           post={post}
           showText={true}
+        />
+        <AvatarInputField
+          postId={JSON.stringify(post._id)}
+          type="comment"
+          placeholder="Write a comment"
+          user={JSON.parse(JSON.stringify(user))}
         />
       </CardFooter>
     </Card>

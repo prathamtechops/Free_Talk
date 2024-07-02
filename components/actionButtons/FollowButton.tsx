@@ -15,9 +15,15 @@ interface FollowButtonProps {
   userId: Schema.Types.ObjectId;
   potentialUserId: Schema.Types.ObjectId;
   type: "follow" | "unfollow" | "request" | "accept" | "remove" | "reject";
+  notificationId?: Schema.Types.ObjectId;
 }
 
-const FollowButton = ({ userId, potentialUserId, type }: FollowButtonProps) => {
+const FollowButton = ({
+  userId,
+  potentialUserId,
+  type,
+  notificationId,
+}: FollowButtonProps) => {
   const [followState, setFollowState] = useState<
     | "follow"
     | "unfollow"
@@ -64,6 +70,7 @@ const FollowButton = ({ userId, potentialUserId, type }: FollowButtonProps) => {
         userId,
         potentialUserId,
         pathname,
+        notificationId,
       });
 
       toast({

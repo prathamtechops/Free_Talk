@@ -1,16 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSuggestedUsers } from "@/lib/actions/recommendation.action";
-import { getUserByClerkId } from "@/lib/actions/user.actions";
-import { getUserClerkId } from "@/lib/getAuthUser";
+import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import SuggestedUsers from "./SuggestedUsers";
 
 const Suggestions = async () => {
-  const userId = await getUserClerkId();
+  const { user } = await getAuthenticatedUser();
 
-  const [myId, users] = await Promise.all([
-    getUserByClerkId({ clerkId: userId }),
-    getSuggestedUsers({ userId }),
-  ]);
+  const users = await getSuggestedUsers({ userId: user._id });
 
   return (
     <Card>
@@ -20,7 +16,7 @@ const Suggestions = async () => {
       <div className="border-b-2" />
       <CardContent className="flex items-center">
         <SuggestedUsers
-          myUser={JSON.parse(JSON.stringify(myId))}
+          myUser={JSON.parse(JSON.stringify(user))}
           users={JSON.parse(JSON.stringify(users))}
         />
       </CardContent>

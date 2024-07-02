@@ -1,15 +1,26 @@
 "use client";
 import { navlinks } from "@/constants";
 import { cn } from "@/lib/utils";
+import { useNotificationStore } from "@/store/notification.store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AddPostDialog } from "./AddPostDialog";
 import Notification from "./Notification";
 
-export const SidebarContent = ({ clerkId }: { clerkId: string | null }) => {
+export const SidebarContent = ({
+  clerkId,
+  user,
+}: {
+  clerkId: string | null;
+  user: string;
+}) => {
   const pathname = usePathname();
 
   const hideLinkNames = pathname?.includes("/chat") || pathname === "/chat";
+
+  const notificationCount = useNotificationStore(
+    (state) => state.notificatonCount
+  );
 
   return (
     <div className="flex flex-col space-y-4 bg-background">
@@ -63,7 +74,15 @@ export const SidebarContent = ({ clerkId }: { clerkId: string | null }) => {
                 className="group flex cursor-pointer gap-4 p-2 pl-5"
                 key={link.name}
               >
-                <Icon className={cn("group-hover:scale-125 size-5")} />
+                <div className="relative">
+                  <Icon className={cn("group-hover:scale-125 size-5")} />
+
+                  {notificationCount > 0 && (
+                    <div className="absolute -right-2 -top-2 flex  size-5 items-center justify-center rounded-full bg-red-500 text-center text-xs font-bold  text-white">
+                      <span>{notificationCount}</span>
+                    </div>
+                  )}
+                </div>
                 {!hideLinkNames && (
                   <span className="hidden lg:block" key={link.name}>
                     {link.name}
@@ -71,6 +90,7 @@ export const SidebarContent = ({ clerkId }: { clerkId: string | null }) => {
                 )}
               </div>
             }
+            user={user}
           />
         ) : (
           link.name === "Post" && (

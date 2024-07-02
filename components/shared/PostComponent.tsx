@@ -19,7 +19,7 @@ export function PostComponent({ post }: { post: PostInterface }) {
 
   return (
     <div
-      className="relative size-36 xs:size-40 sm:size-48 md:size-52  xl:size-56"
+      className="xs:size-40 relative size-36 sm:size-48 md:size-52  xl:size-56"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

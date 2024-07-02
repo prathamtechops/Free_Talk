@@ -1,8 +1,6 @@
-import { GalleryIcon } from "@/components/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { getAuthenticatedUser } from "@/lib/getAuthUser";
-import UsersAvatar from "../shared/UsersAvatar";
+import { AvatarInputField } from "./AvatarInputField";
 
 export const HomePostField = async () => {
   const { user } = await getAuthenticatedUser();
@@ -12,15 +10,12 @@ export const HomePostField = async () => {
         <CardTitle>Want to share something?</CardTitle>
       </CardHeader>
       <div className="border-b-2" />
-      <CardContent className="flex items-center">
-        <div className="flex w-full">
-          <UsersAvatar avatar={user?.avatar} />
-          <Input
-            placeholder="What's on your mind?"
-            className="border-none shadow-none focus:bg-background focus:ring-0 focus-visible:bg-background focus-visible:ring-0 "
-          />
-        </div>
-        <GalleryIcon className="ml-2 size-6 text-muted-foreground" />
+      <CardContent>
+        <AvatarInputField
+          type="post"
+          placeholder="What's on your mind?"
+          user={JSON.parse(JSON.stringify(user))}
+        />
       </CardContent>
     </Card>
   );

@@ -29,10 +29,10 @@ export default async function PostInfo({ post, user }: PostInfoInterface) {
         user={user}
       />
       <div className="max-h-[300px] flex-1 space-y-4 overflow-y-auto">
-        {result.comments.map((comment, index) => (
+        {result.comments.map((comment: any, index: number) => (
           <div key={index} className="flex items-start gap-4">
-            <UsersAvatar avatar="/placeholder-user.jpg" />
-            <div className="flex-1">Jk</div>
+            <UsersAvatar avatar={comment.author?.avatar} />
+            <div className="flex-1 text-xs">{comment.content}</div>
           </div>
         ))}
       </div>

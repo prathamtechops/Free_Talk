@@ -1,7 +1,10 @@
+"use client";
 import { CommentIcon, SaveIcon, ShareIcon } from "@/components/icons";
 import { UserInterface } from "@/database/user.model";
 import { cn } from "@/lib/utils";
+import { useCommentStore } from "@/store/comment.store";
 import { PostPage } from "@/types";
+import { useEffect } from "react";
 import LikeButton from "../actionButtons/LikeButton";
 
 interface MetricInterface {
@@ -19,6 +22,14 @@ export const Metrics = ({
   showText = true,
   user,
 }: MetricInterface) => {
+  const setCommentCount = useCommentStore((state) => state.setCommentCount);
+  const commentCount = useCommentStore((state) => state.commentCounts);
+
+  useEffect(() => {
+    if (commentCount[post?._id.toString()]) return;
+    setCommentCount(post?._id.toString(), post?.comments?.length || 0);
+  }, [post?._id, post?.comments?.length, setCommentCount, commentCount]);
+
   return (
     <div className="flex w-full justify-between">
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>
@@ -26,7 +37,7 @@ export const Metrics = ({
           className={cn("size-4 text-muted-foreground", iconStyles)}
         />
         <p className="space-x-1 ">
-          <span>{post?.comments?.length}</span>
+          <span>{commentCount[post?._id.toString()]}</span>
           {showText && <span>Comments</span>}
         </p>
       </div>

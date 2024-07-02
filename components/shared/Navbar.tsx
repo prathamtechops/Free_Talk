@@ -23,7 +23,7 @@ export const Navbar = () => {
             afterSignOutUrl="/sign-in"
             appearance={{
               elements: {
-                avatarBox: "w-10 h-10",
+                avatarBox: "w-8 h-8",
               },
             }}
           />

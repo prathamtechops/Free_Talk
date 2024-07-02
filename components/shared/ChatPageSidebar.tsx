@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 
 import { getAuthenticatedUser } from "@/lib/getAuthUser";
-import { LogoutButton } from "./LogoutButton";
 import { SidebarContent } from "./SidebarContent";
 import UsersAvatar from "./UsersAvatar";
 
@@ -20,9 +19,9 @@ export const ChatSidebar = async () => {
           avatarSize="size-9"
           avatar={userData?.avatar}
         />
-        <SidebarContent clerkId={userId} />
+        <SidebarContent user={JSON.stringify(userData)} clerkId={userId} />
       </div>
-      <LogoutButton isChatPage={true} />
+      {/* <LogoutButton isChatPage={true} /> */}
     </nav>
   );
 };

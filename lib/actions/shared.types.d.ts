@@ -24,7 +24,7 @@ export interface UpdateUserParams {
 }
 
 export interface GetSuggestedUsers {
-  userId: string | null;
+  userId: Schema.Types.ObjectId;
 }
 
 export interface CreatePostParams {
@@ -60,5 +60,6 @@ export interface GetLikesAndCommentsByPostIdParams {
 export interface FollowRequestParams {
   userId: Schema.Types.ObjectId;
   potentialUserId: Schema.Types.ObjectId;
-  pathname: string;
+  pathname?: string;
+  notificationId?: Schema.Types.ObjectId;
 }

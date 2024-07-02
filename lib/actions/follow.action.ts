@@ -1,5 +1,6 @@
 "use server";
 
+import Notification, { INotification } from "@/database/notification.model";
 import User, { IUser } from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
@@ -9,7 +10,7 @@ export async function sendFollowRequest(params: FollowRequestParams) {
   try {
     await connectToDatabase();
 
-    const { userId, potentialUserId, pathname } = params;
+    const { userId, potentialUserId } = params;
 
     const user: IUser | null = await User.findById(userId);
     const potentialUser: IUser | null = await User.findById(potentialUserId);
@@ -26,7 +27,28 @@ export async function sendFollowRequest(params: FollowRequestParams) {
       throw new Error("Follow request already sent");
     }
 
-    // TODO: Send notification
+    const existingNotification: INotification | null =
+      await Notification.findOne({
+        senderId: potentialUserId,
+        receiverId: userId,
+        type: "followRequest",
+      });
+
+    if (existingNotification) {
+      await Promise.all([
+        Notification.deleteOne({ _id: existingNotification._id }),
+        User.findByIdAndUpdate(potentialUserId, {
+          $pull: { notification: existingNotification._id },
+        }),
+      ]);
+    }
+
+    const notification: INotification = await Notification.create({
+      senderId: userId,
+      receiverId: potentialUserId,
+      content: `${user.username} sent you a follow request`,
+      type: "followRequest",
+    });
 
     await Promise.all([
       User.findByIdAndUpdate(userId, {
@@ -35,9 +57,10 @@ export async function sendFollowRequest(params: FollowRequestParams) {
       User.findByIdAndUpdate(potentialUserId, {
         $addToSet: { followRequests: userId },
       }),
+      User.findByIdAndUpdate(potentialUserId, {
+        $addToSet: { notification: notification._id },
+      }),
     ]);
-
-    revalidatePath(pathname);
 
     return {
       success: true,
@@ -52,7 +75,7 @@ export async function acceptFollowRequest(params: FollowRequestParams) {
   try {
     await connectToDatabase();
 
-    const { userId, potentialUserId, pathname } = params;
+    const { userId, potentialUserId, notificationId, pathname } = params;
 
     const user: IUser | null = await User.findById(userId);
     const potentialUser: IUser | null = await User.findById(potentialUserId);
@@ -69,7 +92,12 @@ export async function acceptFollowRequest(params: FollowRequestParams) {
       throw new Error("Follow request not found");
     }
 
-    // TODO: Send notification
+    const notification: INotification = await Notification.create({
+      senderId: userId,
+      receiverId: potentialUserId,
+      content: `${user.username} accepted your follow request`,
+      type: "acceptFollowRequest",
+    });
 
     await Promise.all([
       User.findByIdAndUpdate(userId, {
@@ -80,9 +108,16 @@ export async function acceptFollowRequest(params: FollowRequestParams) {
         $pull: { followRequestSent: userId },
         $addToSet: { following: userId },
       }),
+      User.findByIdAndUpdate(potentialUserId, {
+        $addToSet: { notification: notification._id },
+      }),
+      Notification.deleteOne({ _id: notificationId }),
+      User.findByIdAndUpdate(userId, {
+        $pull: { notification: notificationId },
+      }),
     ]);
 
-    revalidatePath(pathname);
+    revalidatePath(pathname || "/");
 
     return {
       success: true,
@@ -97,7 +132,7 @@ export async function rejectFollowRequest(params: FollowRequestParams) {
   try {
     await connectToDatabase();
 
-    const { userId, potentialUserId, pathname } = params;
+    const { userId, potentialUserId, notificationId, pathname } = params;
 
     const user: IUser | null = await User.findById(userId);
     const potentialUser: IUser | null = await User.findById(potentialUserId);
@@ -121,9 +156,13 @@ export async function rejectFollowRequest(params: FollowRequestParams) {
       User.findByIdAndUpdate(potentialUserId, {
         $pull: { followRequestSent: userId },
       }),
+      Notification.deleteOne({ _id: notificationId }),
+      User.findByIdAndUpdate(userId, {
+        $pull: { notification: notificationId },
+      }),
     ]);
 
-    revalidatePath(pathname);
+    revalidatePath(pathname || "/");
 
     return {
       success: true,
@@ -138,7 +177,7 @@ export async function removeFollowRequest(params: FollowRequestParams) {
   try {
     await connectToDatabase();
 
-    const { userId, potentialUserId, pathname } = params;
+    const { userId, potentialUserId } = params;
 
     const user: IUser | null = await User.findById(userId);
     const potentialUser: IUser | null = await User.findById(potentialUserId);
@@ -167,8 +206,6 @@ export async function removeFollowRequest(params: FollowRequestParams) {
         $pull: { followRequests: userId },
       }),
     ]);
-
-    revalidatePath(pathname);
 
     return {
       success: true,
@@ -213,7 +250,7 @@ export async function removeFollowing(params: FollowRequestParams) {
       }),
     ]);
 
-    revalidatePath(pathname);
+    revalidatePath(pathname || "/");
 
     return {
       success: true,
@@ -258,7 +295,7 @@ export async function removeFollower(params: FollowRequestParams) {
       }),
     ]);
 
-    revalidatePath(pathname);
+    revalidatePath(pathname || "/");
 
     return {
       success: true,

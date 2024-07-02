@@ -5,7 +5,11 @@ import UserPosts from "@/components/shared/UserPosts";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getUserPosts } from "@/lib/actions/post.action";
-import { getUserByClerkId } from "@/lib/actions/user.actions";
+import {
+  getUserByClerkId,
+  getUserFollowersList,
+  getUserFollowingList,
+} from "@/lib/actions/user.actions";
 import { cn } from "@/lib/utils";
 import { URLProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
@@ -18,9 +22,15 @@ const Profile = async ({ params }: URLProps) => {
 
   const user = await getUserByClerkId({ clerkId: params.id });
 
-  const posts = await getUserPosts({
-    userId: user?._id,
-  });
+  // const posts = await getUserPosts({
+  //   userId: user?._id,
+  // });
+
+  const [posts, following, followers] = await Promise.all([
+    getUserPosts({ userId: user?._id }),
+    getUserFollowingList({ id: user?._id }),
+    getUserFollowersList({ id: user?._id }),
+  ]);
 
   if (!user) {
     redirect("/sign-in");
@@ -46,9 +56,14 @@ const Profile = async ({ params }: URLProps) => {
                 </span>
               )}
             </h1>
-            <p className="text-sm text-muted-foreground">{user?.name}</p>
+            <p className="text-sm text-muted-foreground lg:text-center">
+              {user?.name}
+            </p>
             <div className="lg:hidden">
               <ProfileMetrics
+                postCount={posts?.posts.length}
+                followers={followers}
+                following={following}
                 className="mt-5 flex gap-4 lg:flex-col"
                 textStyles="text-sm  font-thin"
               />
@@ -60,6 +75,9 @@ const Profile = async ({ params }: URLProps) => {
         </p>
         <div className="hidden lg:flex">
           <ProfileMetrics
+            postCount={posts?.posts.length}
+            followers={followers}
+            following={following}
             className="flex gap-4 lg:flex-col"
             textStyles="text-lg text-muted-foreground font-bold"
           />
@@ -111,7 +129,7 @@ const Profile = async ({ params }: URLProps) => {
             )}
           </TabsList>
           <TabsContent
-            className="max-h-[calc(100vh-220px)] overflow-scroll scrollbar-hide "
+            className="scrollbar-hide max-h-[calc(100vh-220px)] overflow-scroll "
             value="posts"
           >
             <UserPosts
@@ -121,7 +139,7 @@ const Profile = async ({ params }: URLProps) => {
           </TabsContent>
           {userId === user?.clerkId && (
             <TabsContent
-              className="max-h-[calc(100vh-220px)] overflow-auto scrollbar-hide "
+              className="scrollbar-hide max-h-[calc(100vh-220px)] overflow-auto "
               value="saved"
             >
               <div></div>

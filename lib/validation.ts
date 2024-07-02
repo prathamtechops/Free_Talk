@@ -44,3 +44,7 @@ export const addPostSchema = z.object({
 
     .max(5, "You can add at most 5 tags"),
 });
+
+export const avatarInputSchema = z.object({
+  input: z.string(),
+});

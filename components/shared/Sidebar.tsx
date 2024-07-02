@@ -1,7 +1,5 @@
 import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import { cn } from "@/lib/utils";
-import { LogoutButton } from "./LogoutButton";
-import { ProfileMetrics } from "./ProfileMetrics";
 import { SidebarContent } from "./SidebarContent";
 import UsersAvatar from "./UsersAvatar";
 
@@ -23,13 +21,10 @@ export const Sidebar = async () => {
           avatarSize="size-9"
           textClassName="lg:block hidden"
         />
-        <ProfileMetrics
-          className="hidden items-center justify-center divide-x-2 lg:flex"
-          textStyles="grid grid-rows-2 px-1 items-center  justify-items-center content-center"
-        />
-        <SidebarContent clerkId={userId} />
+
+        <SidebarContent user={JSON.stringify(userData)} clerkId={userId} />
       </div>
-      <LogoutButton />
+      {/* <LogoutButton /> */}
     </nav>
   );
 };

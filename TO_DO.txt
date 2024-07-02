@@ -2,4 +2,9 @@ error page
 not found page
 loading page
 
+
+explore page
+edit profile
+sign out url
+read unread
 interaction
