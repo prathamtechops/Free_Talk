@@ -18,6 +18,8 @@ export const SidebarContent = ({
 
   const hideLinkNames = pathname?.includes("/chat") || pathname === "/chat";
 
+  const parsedUser = JSON.parse(user);
+
   const notificationCount = useNotificationStore(
     (state) => state.notificatonCount
   );
@@ -108,6 +110,7 @@ export const SidebarContent = ({
                   )}
                 </div>
               }
+              user={JSON.stringify(parsedUser._id)}
             />
           )
         );

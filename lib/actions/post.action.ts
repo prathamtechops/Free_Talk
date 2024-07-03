@@ -21,7 +21,7 @@ export async function createPost(params: CreatePostParams) {
   try {
     await connectToDatabase();
 
-    const { content, tags, author, imageUrl, path } = params;
+    const { content, tags = [], author, imageUrl, path } = params;
 
     const user: IUser | null = await User.findOne({ clerkId: author });
 
@@ -29,12 +29,20 @@ export async function createPost(params: CreatePostParams) {
       throw new Error("User not found");
     }
 
-    const newPost: IPost | null = await Post.create({
-      content,
-      author: user._id,
-      imageUrl,
-    });
+    let newPost: IPost | null = null;
 
+    if (imageUrl) {
+      newPost = await Post.create({
+        content,
+        author: user._id,
+        imageUrl,
+      });
+    } else {
+      newPost = await Post.create({
+        content,
+        author: user._id,
+      });
+    }
     if (!newPost) {
       throw new Error("Post not created");
     }

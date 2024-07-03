@@ -77,16 +77,18 @@ export const PostCard = ({
       <CardContent className="flex  flex-col">
         <p className="text-pretty text-sm font-thin ">{post.content}</p>
         {/* /TODO: Add image */}
-        <Link href={`/post/${post._id}`}>
-          <div className="relative mt-4 h-96 w-full">
-            <Image
-              src={post.imageUrl}
-              alt={post.content}
-              fill
-              className="absolute aspect-square object-cover"
-            />
-          </div>
-        </Link>
+        {post.imageUrl && (
+          <Link href={`/post/${post._id}`}>
+            <div className="relative mt-4 h-96 w-full">
+              <Image
+                src={post.imageUrl}
+                alt={post.content}
+                fill
+                className="absolute aspect-square object-cover"
+              />
+            </div>
+          </Link>
+        )}
       </CardContent>
       <div className="border-b-2" />
       <CardFooter className="flex flex-col items-start gap-3">

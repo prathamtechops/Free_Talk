@@ -19,7 +19,7 @@ export const PostSchema = new Schema<IPost>({
   author: { type: Schema.Types.ObjectId, ref: "User", required: true },
   content: { type: String, required: true },
   likes: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],
-  imageUrl: { type: String, required: true },
+  imageUrl: { type: String, required: false },
   tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: false }],
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment", required: false }],
   shares: [{ type: Schema.Types.ObjectId, ref: "User", required: false }],

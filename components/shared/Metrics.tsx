@@ -28,7 +28,8 @@ export const Metrics = ({
   useEffect(() => {
     if (commentCount[post?._id.toString()]) return;
     setCommentCount(post?._id.toString(), post?.comments?.length || 0);
-  }, [post?._id, post?.comments?.length, setCommentCount, commentCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex w-full justify-between">

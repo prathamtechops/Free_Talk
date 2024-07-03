@@ -38,9 +38,11 @@ const UserPosts = ({ userId, userPosts }: UserPostParams) => {
     }
   }, [inView, fetchMoreData]);
 
+  const filterImagePosts = posts?.filter((post) => post.imageUrl);
+
   return (
     <div className="flex flex-wrap gap-4 ">
-      {posts?.map((post) => (
+      {filterImagePosts?.map((post) => (
         <PostComponent key={post._id.toString()} post={post} />
       ))}
       <div ref={ref} />

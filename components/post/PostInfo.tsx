@@ -1,9 +1,10 @@
 import { UserInterface } from "@/database/user.model";
 import { getCommentsByPostId } from "@/lib/actions/post.action";
+import { getTimestamp } from "@/lib/utils";
 import { PostPage } from "@/types";
+import { AvatarInputField } from "../home/AvatarInputField";
 import { Metrics } from "../shared/Metrics";
 import UsersAvatar from "../shared/UsersAvatar";
-import { Input } from "../ui/input";
 
 interface PostInfoInterface {
   post: PostPage;
@@ -15,11 +16,7 @@ export default async function PostInfo({ post, user }: PostInfoInterface) {
   return (
     <div className="flex h-full flex-col space-y-4 p-4">
       <div className="space-y-4">
-        <p className="text-muted-foreground">
-          Once upon a time, in a far-off land, there was a very lazy king who
-          spent all day lounging on his throne. One day, his advisors came to
-          him with a problem: the kingdom was running out of money.
-        </p>
+        <p className="text-muted-foreground">{post.content}</p>
       </div>
       <Metrics
         showText={false}
@@ -28,17 +25,25 @@ export default async function PostInfo({ post, user }: PostInfoInterface) {
         post={post}
         user={user}
       />
-      <div className="max-h-[300px] flex-1 space-y-4 overflow-y-auto">
+      <div className="max-h-[300px]  flex-1 space-y-4 overflow-y-auto">
         {result.comments.map((comment: any, index: number) => (
-          <div key={index} className="flex items-start gap-4">
-            <UsersAvatar avatar={comment.author?.avatar} />
-            <div className="flex-1 text-xs">{comment.content}</div>
+          <div key={index} className="flex items-start justify-between gap-4">
+            <UsersAvatar
+              avatar={comment.author?.avatar}
+              name={comment.author.username}
+              subText={comment.content}
+            />
+            <div className=" text-xs">{getTimestamp(comment.createdAt)}</div>
           </div>
         ))}
       </div>
       <div className="flex items-center gap-4 border-t-2 py-2">
-        <UsersAvatar avatar="/placeholder-user.jpg" />
-        <Input placeholder="Add a comment" />
+        <AvatarInputField
+          postId={JSON.stringify(post._id)}
+          type="comment"
+          placeholder="Write a comment"
+          user={JSON.parse(JSON.stringify(user))}
+        />
       </div>
     </div>
   );

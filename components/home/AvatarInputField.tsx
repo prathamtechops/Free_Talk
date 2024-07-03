@@ -9,13 +9,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { UserInterface } from "@/database/user.model";
 import { addComment } from "@/lib/actions/comment.action";
+import { createPost } from "@/lib/actions/post.action";
 import { avatarInputSchema } from "@/lib/validation";
 import { useCommentStore } from "@/store/comment.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReplyIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { GalleryIcon } from "../icons";
+import { ThoughtBubbleCloudIcon } from "../icons";
 import UsersAvatar from "../shared/UsersAvatar";
 import { useToast } from "../ui/use-toast";
 
@@ -43,6 +45,7 @@ export const AvatarInputField = ({
 
   const commentCount = useCommentStore((state) => state.commentCounts);
   const setCommentCount = useCommentStore((state) => state.setCommentCount);
+  const pathname = usePathname();
 
   async function onSubmit(values: z.infer<typeof avatarInputSchema>) {
     const { input } = values;
@@ -57,6 +60,7 @@ export const AvatarInputField = ({
           postId: JSON.parse(postId),
           authorId: user._id,
           content: input,
+          path: pathname,
         });
 
         if (res?.success) {
@@ -73,6 +77,30 @@ export const AvatarInputField = ({
         });
 
         setCommentCount(JSON.parse(postId).toString(), currentCommentCount);
+      }
+    }
+
+    if (type === "post") {
+      try {
+        const res = await createPost({
+          author: user.clerkId,
+          content: input,
+          path: pathname,
+          tags: [],
+        });
+
+        if (res?.success) {
+          toast({
+            title: res?.message,
+            variant: "success",
+          });
+
+          form.reset();
+        }
+      } catch (error) {
+        toast({
+          title: error instanceof Error ? error.message : "Unknown error",
+        });
       }
     }
   }
@@ -102,7 +130,7 @@ export const AvatarInputField = ({
           </div>
           {type === "post" && (
             <button type="submit">
-              <GalleryIcon className="ml-2 size-6 text-muted-foreground" />
+              <ThoughtBubbleCloudIcon className="ml-2 size-6 text-muted-foreground" />
             </button>
           )}
           {type === "comment" && (

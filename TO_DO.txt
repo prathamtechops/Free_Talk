@@ -6,5 +6,4 @@ loading page
 explore page
 edit profile
 sign out url
-read unread
 interaction

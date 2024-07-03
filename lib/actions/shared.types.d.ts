@@ -30,8 +30,8 @@ export interface GetSuggestedUsers {
 export interface CreatePostParams {
   content: string;
   tags: string[];
-  author: string;
-  imageUrl: string;
+  author: string | Schema.Types.ObjectId;
+  imageUrl?: string;
   path: string;
 }
 

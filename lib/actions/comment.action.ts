@@ -4,12 +4,14 @@ import Comment, { IComment } from "@/database/comment.model";
 import Post, { IPost } from "@/database/post.model";
 import User, { IUser } from "@/database/user.model";
 import { Schema } from "mongoose";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoConnect";
 
 interface AddCommentParams {
   postId: Schema.Types.ObjectId;
   authorId: Schema.Types.ObjectId;
   content: string;
+  path: string;
 }
 
 export async function addComment(params: AddCommentParams) {
@@ -40,6 +42,8 @@ export async function addComment(params: AddCommentParams) {
     await Post.findByIdAndUpdate(postId, {
       $push: { comments: comment._id },
     });
+
+    revalidatePath(params.path);
 
     return {
       success: true,
