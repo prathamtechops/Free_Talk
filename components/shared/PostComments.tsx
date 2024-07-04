@@ -1,3 +1,4 @@
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -5,78 +6,77 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { UserInterface } from "@/database/user.model";
-import { getLikesByPostId } from "@/lib/actions/post.action";
+import { getCommentsByPostId } from "@/lib/actions/post.action";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Schema } from "mongoose";
 import { useCallback, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import UsersAvatar from "./UsersAvatar";
 
-interface PostLikedByUserInterface {
+interface PostCommentsInterface {
   postId: Schema.Types.ObjectId;
 }
 
-export function PostLikedByUser({ postId }: PostLikedByUserInterface) {
-  const [userLikes, setUserLikes] = useState<UserInterface[]>([]);
+export function PostComments({ postId }: PostCommentsInterface) {
+  const [userComments, setUserComments] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPage] = useState(1);
   const [ref, inView] = useInView();
   const [loading, setLoading] = useState(false);
 
+  const fetchCommentsResults = async () => {
+    setLoading(true);
+    try {
+      const result = await getCommentsByPostId({
+        postId,
+      });
+
+      setUserComments(result.comments);
+      setTotalPages(result.totalPages);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchLikeResults = async () => {
-      setLoading(true);
-      try {
-        const result = await getLikesByPostId({
-          postId,
-        });
-
-        setUserLikes(result.likes);
-        setTotalPages(result.totalPages);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLikeResults();
+    fetchCommentsResults();
   }, []);
 
   const fetchMoreData = useCallback(async () => {
     const next = page + 1;
-    const newLikes = await getLikesByPostId({
+    const newComments = await getCommentsByPostId({
       postId,
       page: next,
     });
-    if (newLikes?.likes.length > 0) {
-      setUserLikes([...userLikes, ...newLikes.likes]);
+    if (newComments?.comments.length > 0) {
+      setUserComments([...userComments, ...newComments.comments]);
       setPage(next);
     }
-  }, [postId, page, userLikes]);
+  }, [postId, page, userComments]);
 
   useEffect(() => {
     if (inView && totalPages > page) {
       fetchMoreData();
     }
-  }, [inView, fetchMoreData, totalPages, page]);
-
+  }, [inView, fetchMoreData]);
   return (
     <Dialog>
-      <DialogTrigger>Likes</DialogTrigger>
+      <DialogTrigger>Comments</DialogTrigger>
       <DialogContent className="max-h-[70vh] overflow-auto  sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Comments</DialogTitle>
         </DialogHeader>
         <div className="w-full space-y-2">
-          {userLikes.map((data) => (
+          {userComments.map((data: any) => (
             <UsersAvatar
               key={data._id.toString()}
-              avatar={data.avatar}
-              name={data.username}
-              subText={data.name}
+              avatar={data.author.avatar}
+              name={data.content}
+              subText={data.author.username}
               avatarSize="size-10"
+              textClassName="flex flex-col-reverse"
             />
           ))}
         </div>

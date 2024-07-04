@@ -1,11 +1,13 @@
 "use client";
-import { CommentIcon, SaveIcon, ShareIcon } from "@/components/icons";
+import { CommentIcon, ShareIcon } from "@/components/icons";
 import { UserInterface } from "@/database/user.model";
 import { cn } from "@/lib/utils";
 import { useCommentStore } from "@/store/comment.store";
 import { PostPage } from "@/types";
 import { useEffect } from "react";
 import LikeButton from "../actionButtons/LikeButton";
+import SaveButton from "../actionButtons/SaveButton";
+import { PostComments } from "./PostComments";
 
 interface MetricInterface {
   textStyles?: string;
@@ -17,8 +19,8 @@ interface MetricInterface {
 
 export const Metrics = ({
   post,
-  textStyles = "",
-  iconStyles = "",
+  textStyles,
+  iconStyles,
   showText = true,
   user,
 }: MetricInterface) => {
@@ -39,7 +41,7 @@ export const Metrics = ({
         />
         <p className="space-x-1 ">
           <span>{commentCount[post?._id.toString()]}</span>
-          {showText && <span>Comments</span>}
+          {showText && <PostComments postId={post._id} />}
         </p>
       </div>
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>
@@ -59,11 +61,13 @@ export const Metrics = ({
         </p>
       </div>
       <div className={cn("flex items-center gap-2 text-xs", textStyles)}>
-        <SaveIcon className={cn("size-4 text-muted-foreground", iconStyles)} />
-        <p className="space-x-1 ">
-          <span>{post?.saved?.length}</span>
-          {showText && <span>Saves</span>}
-        </p>
+        <SaveButton
+          iconStyle={iconStyles}
+          post={post}
+          showText={showText}
+          userId={JSON.parse(JSON.stringify(user?._id))}
+          isSaved={!!user?.saved.includes(post?._id)}
+        />
       </div>
     </div>
   );

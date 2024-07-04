@@ -3,7 +3,6 @@ import { create } from "zustand";
 
 interface LikesState {
   likes: Record<string, boolean>;
-
   setLike: (postId: Schema.Types.ObjectId, value: boolean) => void;
 }
 

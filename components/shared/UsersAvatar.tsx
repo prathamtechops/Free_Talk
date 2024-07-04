@@ -20,11 +20,9 @@ export default function UsersAvatar({
         </AvatarFallback>
       </Avatar>
       {name && (
-        <div
-          className={cn("flex flex-col min-w-0 overflow-hidden", textClassName)}
-        >
+        <div className={cn("min-w-0 overflow-hidden text-xs", textClassName)}>
           <p className="truncate text-sm font-bold">{name}</p>
-          <p className="truncate text-xs text-muted-foreground">{subText}</p>
+          <p className="truncate text-muted-foreground">{subText}</p>
         </div>
       )}
       {children && <div className="ml-auto">{children}</div>}

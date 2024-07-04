@@ -19,7 +19,6 @@ import { getTimestamp } from "@/lib/utils";
 
 import { Schema } from "mongoose";
 import Image from "next/image";
-import Link from "next/link";
 import { AvatarInputField } from "../home/AvatarInputField";
 import { Metrics } from "./Metrics";
 
@@ -78,16 +77,16 @@ export const PostCard = ({
         <p className="text-pretty text-sm font-thin ">{post.content}</p>
         {/* /TODO: Add image */}
         {post.imageUrl && (
-          <Link href={`/post/${post._id}`}>
-            <div className="relative mt-4 h-96 w-full">
-              <Image
-                src={post.imageUrl}
-                alt={post.content}
-                fill
-                className="absolute aspect-square object-cover"
-              />
-            </div>
-          </Link>
+          // <Link href={`/post/${post._id}`}>
+          <div className="relative mt-4 h-96 w-full">
+            <Image
+              src={post.imageUrl}
+              alt={post.content}
+              fill
+              className="absolute aspect-square object-cover"
+            />
+          </div>
+          // </Link>
         )}
       </CardContent>
       <div className="border-b-2" />

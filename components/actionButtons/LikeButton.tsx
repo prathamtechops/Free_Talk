@@ -65,7 +65,7 @@ const LikeButton = ({
       />
       <p className="space-x-1">
         <span>{totalLikes}</span>
-        {showText && <PostLikedByUser postId={post._id} userId={userId} />}
+        {showText && <PostLikedByUser postId={post._id} />}
       </p>
     </>
   );

@@ -3,6 +3,9 @@ not found page
 loading page
 
 
+saved list
+show saved post
+
 explore page
 edit profile
 sign out url

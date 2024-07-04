@@ -15,14 +15,6 @@ export interface UserAvatarTypes {
   children?: React.ReactNode;
 }
 
-export interface UserSessionTypes {
-  user?: {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-  } | null;
-}
-
 export interface ParamsProps {
   params: { id: string };
 }
@@ -66,4 +58,12 @@ export interface LikeButtonProps {
   showText?: boolean;
   userId: Schema.Types.ObjectId;
   isLiked: boolean;
+}
+
+export interface SavedButtonProps {
+  iconStyle?: string;
+  post: PostPage;
+  showText?: boolean;
+  userId: Schema.Types.ObjectId;
+  isSaved: boolean;
 }

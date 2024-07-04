@@ -1,7 +1,7 @@
 "use server";
 
 import Comment, { IComment } from "@/database/comment.model";
-import Notification from "@/database/notification.model";
+import Notification, { INotification } from "@/database/notification.model";
 import Post, { IPost } from "@/database/post.model";
 import Tag from "@/database/tag.model";
 import User, { IUser, UserInterface } from "@/database/user.model";
@@ -309,18 +309,43 @@ export async function likeOrUnlikePost(params: LikeOrUnlikePostParams) {
     const postIndex = user.likes.indexOf(postId);
 
     if (userIndex === -1 && postIndex === -1) {
-      // TODO: Send notification to the post author
+      const notification: INotification = await Notification.create({
+        type: "post",
+        sender: userId,
+        receiver: post.author,
+        message: `${user.username} liked your post`,
+      });
       // User has not liked the post yet
       await Promise.all([
+        User.findByIdAndUpdate(post.author, {
+          $addToSet: { notifications: notification._id },
+        }),
         Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } }),
         User.findByIdAndUpdate(userId, { $addToSet: { likes: postId } }),
       ]);
     } else if (userIndex !== -1 && postIndex !== -1) {
       // User has already liked the post
+      const findOldNotification: INotification | null =
+        await Notification.findOne({
+          type: "post",
+          sender: userId,
+          receiver: post.author,
+          message: `${user.username} liked your post`,
+        });
+
       await Promise.all([
         Post.findByIdAndUpdate(postId, { $pull: { likes: userId } }),
         User.findByIdAndUpdate(userId, { $pull: { likes: postId } }),
       ]);
+
+      if (findOldNotification) {
+        await Promise.all([
+          User.findByIdAndUpdate(post.author, {
+            $pull: { notifications: findOldNotification._id },
+          }),
+          Notification.findByIdAndDelete(findOldNotification._id),
+        ]);
+      }
     } else {
       throw new Error("Inconsistent like state between post and user");
     }
@@ -333,6 +358,61 @@ export async function likeOrUnlikePost(params: LikeOrUnlikePostParams) {
         userIndex === -1
           ? "Post liked successfully"
           : "Post unliked successfully",
+    };
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
+  }
+}
+
+export interface SaveOrUnsavePostParams {
+  userId: Schema.Types.ObjectId;
+  postId: Schema.Types.ObjectId;
+  pathname: string;
+}
+
+export async function saveOrUnsavePost(params: SaveOrUnsavePostParams) {
+  try {
+    await connectToDatabase();
+
+    const { userId, postId, pathname } = params;
+
+    // Perform the save/unsave operation atomically
+    const post: IPost | null = await Post.findById(postId);
+    const user: IUser | null = await User.findById(userId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const userIndex = post.saved.indexOf(userId);
+    const postIndex = user.saved.indexOf(postId);
+
+    if (userIndex === -1 && postIndex === -1) {
+      await Promise.all([
+        Post.findByIdAndUpdate(postId, { $addToSet: { saved: userId } }),
+        User.findByIdAndUpdate(userId, { $addToSet: { saved: postId } }),
+      ]);
+    } else if (userIndex !== -1 && postIndex !== -1) {
+      await Promise.all([
+        Post.findByIdAndUpdate(postId, { $pull: { saved: userId } }),
+        User.findByIdAndUpdate(userId, { $pull: { saved: postId } }),
+      ]);
+    } else {
+      throw new Error("Inconsistent save state between post and user");
+    }
+
+    revalidatePath(pathname);
+
+    return {
+      success: true,
+      message:
+        userIndex === -1
+          ? "Post saved successfully"
+          : "Post unsaved successfully",
     };
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Unknown error");
