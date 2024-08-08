@@ -1,6 +1,7 @@
 "use client";
 import { UserInterface } from "@/database/user.model";
 import { Schema } from "mongoose";
+import Link from "next/link";
 import FollowButton from "../actionButtons/FollowButton";
 import UsersAvatar from "../shared/UsersAvatar";
 
@@ -18,26 +19,32 @@ function SuggestedUsers({
         const isFollowing = !!myUser?.following.includes(user._id);
 
         return (
-          <div className="mb-4 w-full" key={user.name}>
-            <UsersAvatar
-              name={user.username}
-              avatar={user.avatar}
-              subText={user.name}
-              className="w-full"
-            >
-              <FollowButton
-                type={
-                  isRequestSent
-                    ? "request"
-                    : isFollowing
-                      ? "unfollow"
-                      : "follow"
-                }
-                userId={myUser?._id ?? ({} as Schema.Types.ObjectId)}
-                potentialUserId={user._id ?? ({} as Schema.Types.ObjectId)}
-              />
-            </UsersAvatar>
-          </div>
+          <Link
+            key={user.name}
+            href={`/profile/${user.clerkId}`}
+            className="w-full"
+          >
+            <div className="mb-4 w-full">
+              <UsersAvatar
+                name={user.username}
+                avatar={user.avatar}
+                subText={user.name}
+                className="w-full"
+              >
+                <FollowButton
+                  type={
+                    isRequestSent
+                      ? "request"
+                      : isFollowing
+                        ? "unfollow"
+                        : "follow"
+                  }
+                  userId={myUser?._id ?? ({} as Schema.Types.ObjectId)}
+                  potentialUserId={user._id ?? ({} as Schema.Types.ObjectId)}
+                />
+              </UsersAvatar>
+            </div>
+          </Link>
         );
       })}
     </div>

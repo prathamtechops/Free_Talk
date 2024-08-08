@@ -10,6 +10,7 @@ export default function UsersAvatar({
   avatarSize = "size-9",
   textClassName,
   children,
+  subTextClassName,
 }: UserAvatarTypes) {
   return (
     <div className={cn("flex gap-3", className)}>
@@ -21,8 +22,10 @@ export default function UsersAvatar({
       </Avatar>
       {name && (
         <div className={cn("min-w-0 overflow-hidden text-xs", textClassName)}>
-          <p className="truncate text-sm font-bold">{name}</p>
-          <p className="truncate text-muted-foreground">{subText}</p>
+          <p className="truncate  font-bold">{name}</p>
+          <p className={cn("truncate text-muted-foreground", subTextClassName)}>
+            {subText}
+          </p>
         </div>
       )}
       {children && <div className="ml-auto">{children}</div>}

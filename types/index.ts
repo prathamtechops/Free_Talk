@@ -12,6 +12,8 @@ export interface UserAvatarTypes {
   className?: string;
   avatarSize?: string;
   textClassName?: string;
+  subTextClassName?: string;
+
   children?: React.ReactNode;
 }
 

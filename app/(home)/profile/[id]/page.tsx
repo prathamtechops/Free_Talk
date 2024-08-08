@@ -1,3 +1,4 @@
+import CreateChatButton from "@/components/actionButtons/CreateChatButton";
 import { GalleryIcon, SaveIcon } from "@/components/icons";
 import { ProfileMetrics } from "@/components/shared/ProfileMetrics";
 import { ShareProfile } from "@/components/shared/ShareProfile";
@@ -10,15 +11,15 @@ import {
   getUserFollowersList,
   getUserFollowingList,
 } from "@/lib/actions/user.actions";
+import { getAuthenticatedUser } from "@/lib/getAuthUser";
 import { cn } from "@/lib/utils";
 import { URLProps } from "@/types";
-import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const Profile = async ({ params }: URLProps) => {
-  const { userId } = auth();
+  const { userId, user: myUser } = await getAuthenticatedUser();
 
   const user = await getUserByClerkId({ clerkId: params.id });
 
@@ -102,7 +103,11 @@ const Profile = async ({ params }: URLProps) => {
             <Button className="w-full">Follow</Button>
           )}
           {userId !== user?.clerkId && (
-            <Button className="w-full">Message</Button>
+            <CreateChatButton
+              myUserId={JSON.parse(JSON.stringify(myUser._id))}
+              potentialUser={JSON.parse(JSON.stringify(user._id))}
+              potentialUserClerkId={user?.clerkId}
+            />
           )}
         </div>
       </div>

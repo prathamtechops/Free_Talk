@@ -5,6 +5,8 @@ import Feeds from "./Feeds";
 const UserFeed = async () => {
   const { user } = await getAuthenticatedUser();
 
+  console.log(user);
+
   if (!user) return null;
 
   const { posts, totalPages } = await getUserFeed({ userId: user._id });

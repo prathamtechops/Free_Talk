@@ -9,7 +9,7 @@ const ChatLayout = ({ children }: PropsWithChildren) => {
       <Navbar />
       <section className="flex flex-1 overflow-hidden">
         <ChatSidebar />
-        <section className="bg-dark800_light100  grow  overflow-y-auto py-5 sm:p-6  md:p-10">
+        <section className="bg-dark800_light100  grow  overflow-y-auto">
           {children}
         </section>
       </section>
